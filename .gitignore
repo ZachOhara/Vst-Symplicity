@@ -3,9 +3,9 @@
 # Project-Specific Files
 # =========================
 
-Builds/
 JuceLibraryCode/
 *.jucer
+*.rc
 
 # =========================
 # Language Files
