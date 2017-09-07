@@ -23,6 +23,8 @@ protected:
 	//virtual AudioParameterFloat ConstructParameterFloat() = 0;
 	AudioParameterChoice &ConstructParameterChoice(
 		const char*, const char*, const char**, int);
+	AudioParameterInt &ConstructParameterInt(
+		const char*, const char*, int, int, int);
 
 private:
 	String *longName;

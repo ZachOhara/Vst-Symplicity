@@ -94,8 +94,7 @@ void SymplicitySynth::SynthesizeAudio()
 			NoteStatus &note = keyboard[noteID];
 			if (note.isPlaying)
 			{
-				// TODO get frequency for the note here
-				double frequency = 440;
+				double frequency = tuningProcessor.GetFrequency(noteID);
 
 				double oscValues[NUM_OSCILATORS];
 				for (int i = 0; i < NUM_OSCILATORS; i++) {
@@ -108,12 +107,13 @@ void SymplicitySynth::SynthesizeAudio()
 
 				// TODO apply envelope
 
-				sampleBuffer[frame] = sample;
+				sampleBuffer[frame] += sample;
 			}
 		}
 		// TODO add noise
 		// TODO apply filter
 		// TODO apply master volume
+		sampleBuffer[frame] *= 0.25; // stop clipping
 
 		// TODO tick the progressive pitch bend
 	}

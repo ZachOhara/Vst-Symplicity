@@ -4,10 +4,12 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DebugLogger.h"
+#include "TuningProcessor.h"
 #include "Oscilator.h"
 
-#define NUM_NOTES 128
-#define NUM_OSCILATORS 3
+// Note that NUM_NOTES is also defined in TuningProcessor
+static const int NUM_NOTES = 128;
+static const int NUM_OSCILATORS = 3;
 
 enum PedalState {
 	INACTIVE,
@@ -66,6 +68,7 @@ private:
 	double secondsPerSample;
 	bool isPedalOn = false;
 
+	TuningProcessor tuningProcessor;
 	Oscilator oscilators[NUM_OSCILATORS];
 
 	void ProcessMidiMessages(MidiBuffer&);

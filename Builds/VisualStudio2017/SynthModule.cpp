@@ -62,3 +62,20 @@ AudioParameterChoice &SynthModule::ConstructParameterChoice(
 		initial
 	);
 }
+
+AudioParameterInt & SynthModule::ConstructParameterInt(
+	const char *suffixLong,
+	const char *suffixShort,
+	int minValue,
+	int maxValue,
+	int initialValue
+)
+{
+	return AudioParameterInt(
+		GetShortName() + suffixShort,
+		GetLongName() + suffixLong,
+		minValue,
+		maxValue,
+		initialValue
+	);
+}
