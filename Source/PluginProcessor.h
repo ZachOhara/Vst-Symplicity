@@ -11,7 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "../Builds/VisualStudio2017/SymplicitySynth.h"
 
 //==============================================================================
 /**
@@ -56,6 +56,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+	SymplicitySynth symplicity;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VstsymplicityAudioProcessor)
 };

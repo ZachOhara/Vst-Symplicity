@@ -73,28 +73,30 @@ int VstsymplicityAudioProcessor::getCurrentProgram()
 
 void VstsymplicityAudioProcessor::setCurrentProgram (int index)
 {
+	index; // suppress the warning
 }
 
 const String VstsymplicityAudioProcessor::getProgramName (int index)
 {
+	index; // suppress the warning
     return {};
 }
 
 void VstsymplicityAudioProcessor::changeProgramName (int index, const String& newName)
 {
+	index; // suppress the warning
+	newName; // suppress the warning
 }
 
 //==============================================================================
 void VstsymplicityAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+	symplicity.PrepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void VstsymplicityAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+	symplicity.ReleaseResources();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -123,26 +125,7 @@ bool VstsymplicityAudioProcessor::isBusesLayoutSupported (const BusesLayout& lay
 
 void VstsymplicityAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    const int totalNumInputChannels  = getTotalNumInputChannels();
-    const int totalNumOutputChannels = getTotalNumOutputChannels();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        float* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
+	symplicity.ProcessBlock(buffer, midiMessages);
 }
 
 //==============================================================================
