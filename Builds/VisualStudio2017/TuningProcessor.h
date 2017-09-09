@@ -33,6 +33,8 @@ public:
 
 	double GetFrequency(int);
 
+	std::vector<AudioProcessorParameter*> GetParameters() override;
+
 private:
 	AudioParameterChoice &modeParam;
 	AudioParameterInt &keyParam;

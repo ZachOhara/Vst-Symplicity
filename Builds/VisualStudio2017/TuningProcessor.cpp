@@ -74,3 +74,11 @@ void TuningProcessor::InitializeJustifiedMap(int key)
 		justifiedKeyMaps[key][i] = justifiedKeyMaps[key][i - (12 * octaveOffset)] * std::pow(2, octaveOffset);
 	}
 }
+
+std::vector<AudioProcessorParameter*> TuningProcessor::GetParameters()
+{
+	std::vector<AudioProcessorParameter*> paramList;
+	paramList.push_back(&modeParam);
+	paramList.push_back(&keyParam);
+	return paramList;
+}

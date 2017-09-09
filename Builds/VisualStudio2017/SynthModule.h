@@ -10,7 +10,7 @@ public:
 
 	void SetSampleRate(double);
 
-	//virtual std::vector<AudioProcessorParameter&> GetParameters() = 0;
+	virtual std::vector<AudioProcessorParameter*> GetParameters() = 0;
 
 protected:
 	String& GetLongName();
