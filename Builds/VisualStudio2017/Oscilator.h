@@ -41,7 +41,7 @@ public:
 
 	double GetSample(double*, double);
 
-	std::vector<AudioProcessorParameter*> GetParameters() override;
+	ModuleParameterSet GetParameters() override;
 	
 private:
 	AudioParameterChoice &octaveParam;

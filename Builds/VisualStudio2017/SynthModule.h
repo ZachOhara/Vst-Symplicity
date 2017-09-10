@@ -2,6 +2,24 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+enum ParameterType {
+	PARAM_BOOL,
+	PARAM_CHOICE,
+	PARAM_INT,
+	PARAM_FLOAT,
+};
+
+struct ModuleParameter {
+	AudioProcessorParameter *parameter;
+	ParameterType type;
+	String displayName;
+};
+
+struct ModuleParameterSet {
+	std::vector<ModuleParameter> &parameters;
+	String &sectionName;
+};
+
 class SynthModule
 {
 public:
@@ -10,7 +28,7 @@ public:
 
 	void SetSampleRate(double);
 
-	virtual std::vector<AudioProcessorParameter*> GetParameters() = 0;
+	virtual ModuleParameterSet GetParameters() = 0;
 
 protected:
 	String& GetLongName();
@@ -33,4 +51,3 @@ private:
 	double sampleRate;
 	double secondsPerSample;
 };
-

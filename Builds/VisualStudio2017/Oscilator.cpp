@@ -45,10 +45,10 @@ Waveform Oscilator::GetWaveform() {
 	// return (Waveform)waveformParam->getIndex();
 }
 
-std::vector<AudioProcessorParameter*> Oscilator::GetParameters()
+ModuleParameterSet Oscilator::GetParameters()
 {
-	std::vector<AudioProcessorParameter*> paramList;
-	paramList.push_back(&octaveParam);
-	paramList.push_back(&waveformParam);
-	return paramList;
+	std::vector<ModuleParameter> paramList;
+	paramList.push_back({ &octaveParam, PARAM_CHOICE, "Octave" });
+	paramList.push_back({ &waveformParam, PARAM_CHOICE, "Waveform" });
+	return { paramList, GetLongName() };
 }

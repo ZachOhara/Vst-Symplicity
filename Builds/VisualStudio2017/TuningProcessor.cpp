@@ -75,10 +75,10 @@ void TuningProcessor::InitializeJustifiedMap(int key)
 	}
 }
 
-std::vector<AudioProcessorParameter*> TuningProcessor::GetParameters()
+ModuleParameterSet TuningProcessor::GetParameters()
 {
-	std::vector<AudioProcessorParameter*> paramList;
-	paramList.push_back(&modeParam);
-	paramList.push_back(&keyParam);
-	return paramList;
+	std::vector<ModuleParameter> paramList;
+	paramList.push_back({ &modeParam, PARAM_CHOICE, "Temperament" });
+	paramList.push_back({ &keyParam, PARAM_INT, "Key" });
+	return { paramList, GetLongName() };
 }

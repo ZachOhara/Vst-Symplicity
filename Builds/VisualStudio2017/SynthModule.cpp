@@ -48,7 +48,7 @@ double SynthModule::GetSecondsPerSample()
 	return secondsPerSample;
 }
 
-AudioParameterChoice &SynthModule::ConstructParameterChoice(
+AudioParameterChoice & SynthModule::ConstructParameterChoice(
 	const char *suffixLong,
 	const char *suffixShort,
 	const char **options,
