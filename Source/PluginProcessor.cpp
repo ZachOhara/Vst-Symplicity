@@ -136,7 +136,7 @@ bool VstsymplicityAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* VstsymplicityAudioProcessor::createEditor()
 {
-    return new VstsymplicityAudioProcessorEditor (*this);
+    return &(symplicity.ConstructEditor(*this));
 }
 
 //==============================================================================

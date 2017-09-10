@@ -1,9 +1,13 @@
 #include "SymplicitySynth.h"
 
 SymplicitySynth::SymplicitySynth() :
-	//osc1(1)
-	oscilators{ Oscilator(1), Oscilator(2), Oscilator(3) }
+	oscilators { Oscilator(1), Oscilator(2), Oscilator(3) }
 {
+	modules.push_back(&tuningProcessor);
+	for (int i = 0; i < NUM_OSCILATORS; i++)
+	{
+		modules.push_back(&oscilators[i]);
+	}
 }
 
 SymplicitySynth::~SymplicitySynth()
@@ -12,33 +16,35 @@ SymplicitySynth::~SymplicitySynth()
 
 void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 {
+	// Initialize this state
 	secondsPerSample = 1 / newSampleRate;
-
 	blockSize = newBlockSize;
 	sampleBuffer = (double*)malloc(sizeof(double) * blockSize);
 
-	//osc1.SetSampleRate(newSampleRate);
-	for (int i = 0; i < NUM_OSCILATORS; i++)
+	// Send the sample rate to the modules
+	for (int i = 0; i < modules.size(); i++)
 	{
-		oscilators[i].SetSampleRate(newSampleRate);
+		modules.at(i)->SetSampleRate(newSampleRate);
 	}
-	/*
-	oscilators = (Oscilator*)malloc(sizeof(Oscilator) * NUM_OSCILATORS);
-	for (int i = 0; i < NUM_OSCILATORS; i++) {
-	String name(std::to_string(i + 1));
-	Oscilator osc(name);
-	oscilators[i] = osc;
-	}
-	*/
+
 	debugLog.OpenDebugLogFile();
-	debugLog.stream << "Starting debug log\n";
+	//debugLog.stream << "Starting debug log\n";
 }
 
 void SymplicitySynth::ReleaseResources()
 {
 	free(sampleBuffer);
-	//free(oscilators);
 	debugLog.CloseDebugLogFile();
+}
+
+AudioProcessorEditor & SymplicitySynth::ConstructEditor(AudioProcessor &processor)
+{
+	std::vector<ModuleParameterSet*> parameters;
+	for (int i = 0; i < modules.size(); i++)
+	{
+		parameters.push_back(&modules.at(i)->GetParameters());
+	}
+	return SymplicityEditor(processor, parameters);
 }
 
 void SymplicitySynth::ProcessBlock(AudioSampleBuffer &audioBuffer, MidiBuffer &midiBuffer)
@@ -68,11 +74,11 @@ void SymplicitySynth::ProcessMidiMessages(MidiBuffer &midiBuffer)
 		switch (GetMessageType(message)) {
 		case NOTE_ON:
 			// TODO if monophonic mode, release other notes
-			debugLog.stream << "Note on: " << noteID << "\n";
+			//debugLog.stream << "Note on: " << noteID << "\n";
 			keyboard[noteID].Begin(eventTime);
 			break;
 		case NOTE_OFF:
-			debugLog.stream << "Note off: " << noteID << "\n";
+			//debugLog.stream << "Note off: " << noteID << "\n";
 			keyboard[noteID].Release(eventTime);
 			break;
 		case PEDAL_ON:

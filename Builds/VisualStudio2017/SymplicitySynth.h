@@ -6,6 +6,7 @@
 #include "DebugLogger.h"
 #include "TuningProcessor.h"
 #include "Oscilator.h"
+#include "SymplicityEditor.h"
 
 // Note that NUM_NOTES is also defined in TuningProcessor
 static const int NUM_NOTES = 128;
@@ -60,6 +61,8 @@ public:
 	void ReleaseResources();
 	void ProcessBlock(AudioSampleBuffer&, MidiBuffer&);
 
+	AudioProcessorEditor & ConstructEditor(AudioProcessor&);
+
 private:
 	NoteStatus keyboard[NUM_NOTES];
 	double *sampleBuffer;
@@ -71,7 +74,8 @@ private:
 	TuningProcessor tuningProcessor;
 	Oscilator oscilators[NUM_OSCILATORS];
 
+	std::vector<SynthModule*> modules;
+	
 	void ProcessMidiMessages(MidiBuffer&);
 	void SynthesizeAudio();
 };
-
