@@ -8,6 +8,8 @@
 #include "Oscilator.h"
 #include "SymplicityEditor.h"
 
+//#include "../Source/PluginEditor.h"
+
 // Note that NUM_NOTES is also defined in TuningProcessor
 static const int NUM_NOTES = 128;
 static const int NUM_OSCILATORS = 3;
@@ -61,7 +63,7 @@ public:
 	void ReleaseResources();
 	void ProcessBlock(AudioSampleBuffer&, MidiBuffer&);
 
-	AudioProcessorEditor & ConstructEditor(AudioProcessor&);
+	AudioProcessorEditor* ConstructEditor(AudioProcessor&);
 
 private:
 	NoteStatus keyboard[NUM_NOTES];
@@ -72,7 +74,7 @@ private:
 	bool isPedalOn = false;
 
 	TuningProcessor tuningProcessor;
-	Oscilator oscilators[NUM_OSCILATORS];
+	std::vector<Oscilator*> oscilators;
 
 	std::vector<SynthModule*> modules;
 	

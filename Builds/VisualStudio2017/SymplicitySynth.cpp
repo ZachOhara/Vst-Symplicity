@@ -1,12 +1,12 @@
 #include "SymplicitySynth.h"
 
-SymplicitySynth::SymplicitySynth() :
-	oscilators { Oscilator(1), Oscilator(2), Oscilator(3) }
+SymplicitySynth::SymplicitySynth()
 {
 	modules.push_back(&tuningProcessor);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
-		modules.push_back(&oscilators[i]);
+		oscilators.push_back(new Oscilator(String(std::to_string(i))));
+		modules.push_back(oscilators[i]);
 	}
 }
 
@@ -24,7 +24,7 @@ void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 	// Send the sample rate to the modules
 	for (int i = 0; i < modules.size(); i++)
 	{
-		modules.at(i)->SetSampleRate(newSampleRate);
+		modules[i]->SetSampleRate(newSampleRate);
 	}
 
 	debugLog.OpenDebugLogFile();
@@ -37,14 +37,14 @@ void SymplicitySynth::ReleaseResources()
 	debugLog.CloseDebugLogFile();
 }
 
-AudioProcessorEditor & SymplicitySynth::ConstructEditor(AudioProcessor &processor)
+AudioProcessorEditor * SymplicitySynth::ConstructEditor(AudioProcessor &processor)
 {
 	std::vector<ModuleParameterSet*> parameters;
 	for (int i = 0; i < modules.size(); i++)
 	{
-		parameters.push_back(&modules.at(i)->GetParameters());
+		parameters.push_back(&(modules[i]->GetParameterSet()));
 	}
-	return SymplicityEditor(processor, parameters);
+	return new SymplicityEditor(processor, parameters);
 }
 
 void SymplicitySynth::ProcessBlock(AudioSampleBuffer &audioBuffer, MidiBuffer &midiBuffer)
@@ -104,7 +104,7 @@ void SymplicitySynth::SynthesizeAudio()
 
 				double oscValues[NUM_OSCILATORS];
 				for (int i = 0; i < NUM_OSCILATORS; i++) {
-					oscValues[i] = oscilators[i].GetSample(&note.phase[i], frequency);
+					oscValues[i] = oscilators[i]->GetSample(&note.phase[i], frequency);
 				}
 
 				// TODO mix the values

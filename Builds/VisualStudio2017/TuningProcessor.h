@@ -33,8 +33,6 @@ public:
 
 	double GetFrequency(int);
 
-	ModuleParameterSet GetParameters() override;
-
 private:
 	AudioParameterChoice &modeParam;
 	AudioParameterInt &keyParam;

@@ -1,9 +1,15 @@
 #include "SynthModule.h"
 
-SynthModule::SynthModule(std::string newLongName, std::string newShortName)
+SynthModule::SynthModule(const char * name, const char * abbrev) :
+	SynthModule(*(new String(std::string(name))), *(new String(std::string(abbrev))))
 {
-	longName = new String(newLongName);
-	shortName = new String(newShortName);
+}
+
+SynthModule::SynthModule(String &name, String &abbrev) :
+	paramSet(ModuleParameterSet{ std::vector<ModuleParameter*>(), name }),
+	fullName(name),
+	abbreviation(abbrev)
+{
 }
 
 SynthModule::~SynthModule()
@@ -16,26 +22,9 @@ void SynthModule::SetSampleRate(double newSampleRate)
 	secondsPerSample = 1 / sampleRate;
 }
 
-/*
-void SynthModule::SetLongName(String &newLongName)
+ModuleParameterSet & SynthModule::GetParameterSet()
 {
-	longName = &newLongName;
-}
-
-void SynthModule::SetShortName(String &newShortName)
-{
-	shortName = &newShortName;
-}
-*/
-
-String & SynthModule::GetLongName()
-{
-	return *longName;
-}
-
-String & SynthModule::GetShortName()
-{
-	return *shortName;
+	return paramSet;
 }
 
 double SynthModule::GetSampleRate()
@@ -49,33 +38,67 @@ double SynthModule::GetSecondsPerSample()
 }
 
 AudioParameterChoice & SynthModule::ConstructParameterChoice(
-	const char *suffixLong,
-	const char *suffixShort,
+	const char * csName,
 	const char **options,
 	int initial
 )
 {
-	return AudioParameterChoice(
-		GetShortName() + suffixShort,
-		GetLongName() + suffixLong,
+	String &name = *(new String(csName));
+	AudioParameterChoice &newParam = *(new AudioParameterChoice(
+		BuildParameterId(name),
+		BuildParameterName(name),
 		StringArray(options),
 		initial
-	);
+	));
+	RegisterParameter(newParam, PARAM_CHOICE, name);
+	return newParam;
 }
 
 AudioParameterInt & SynthModule::ConstructParameterInt(
-	const char *suffixLong,
-	const char *suffixShort,
+	const char * csName,
 	int minValue,
 	int maxValue,
 	int initialValue
 )
 {
-	return AudioParameterInt(
-		GetShortName() + suffixShort,
-		GetLongName() + suffixLong,
+
+	String &name = *(new String(csName));
+	AudioParameterInt &newParam = *(new AudioParameterInt (
+		BuildParameterId(name),
+		BuildParameterName(name),
 		minValue,
 		maxValue,
 		initialValue
-	);
+	));
+	RegisterParameter(newParam, PARAM_INT, name);
+	return newParam;
+}
+
+void SynthModule::RegisterParameter(
+	AudioProcessorParameter &newParam,
+	ParameterType type,
+	String &name)
+{
+	ModuleParameter *data = new ModuleParameter{ newParam, type, name };
+	paramSet.params.push_back(data);
+}
+
+String SynthModule::BuildParameterId(String &name)
+{
+	return /*GetAbbreviation() +*/ "_" + name;
+}
+
+String SynthModule::BuildParameterName(String &name)
+{
+	return /* GetFullName() + */ " " + name;
+}
+
+String & SynthModule::GetFullName()
+{
+	return fullName;
+}
+
+String & SynthModule::GetAbbreviation()
+{
+	return abbreviation;
 }

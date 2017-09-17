@@ -1,9 +1,9 @@
 #include "Oscilator.h"
 
-Oscilator::Oscilator(int oscID) :
-	SynthModule("Oscilator " + std::to_string(oscID), "Osc" + std::to_string(oscID)),
-	octaveParam(ConstructParameterChoice(" Octave", "_8ve", octaveOptions, defaultOctave)),
-	waveformParam(ConstructParameterChoice(" Waveform", "_Wave", waveformOptions, 0))
+Oscilator::Oscilator(String &oscID) :
+	SynthModule(*(new String("Oscilator ")) + oscID, *(new String("Osc")) + oscID),
+	octaveParam(ConstructParameterChoice("Octave", octaveOptions, defaultOctave)),
+	waveformParam(ConstructParameterChoice("Waveform", waveformOptions, 0))
 {
 }
 
@@ -43,12 +43,4 @@ int Oscilator::GetOctave() {
 Waveform Oscilator::GetWaveform() {
 	return SINE;
 	// return (Waveform)waveformParam->getIndex();
-}
-
-ModuleParameterSet Oscilator::GetParameters()
-{
-	std::vector<ModuleParameter> paramList;
-	paramList.push_back({ &octaveParam, PARAM_CHOICE, "Octave" });
-	paramList.push_back({ &waveformParam, PARAM_CHOICE, "Waveform" });
-	return { paramList, GetLongName() };
 }

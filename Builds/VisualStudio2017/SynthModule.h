@@ -10,44 +10,52 @@ enum ParameterType {
 };
 
 struct ModuleParameter {
-	AudioProcessorParameter *parameter;
+	AudioProcessorParameter &parameter;
 	ParameterType type;
-	String displayName;
+	String &paramName;
 };
 
 struct ModuleParameterSet {
-	std::vector<ModuleParameter> &parameters;
-	String &sectionName;
+	std::vector<ModuleParameter*> params;
+	String moduleName;
 };
 
 class SynthModule
 {
 public:
-	SynthModule(std::string, std::string);
+	SynthModule(const char *, const char *);
+	SynthModule(String &, String &);
 	~SynthModule();
 
 	void SetSampleRate(double);
 
-	virtual ModuleParameterSet GetParameters() = 0;
+	ModuleParameterSet & GetParameterSet();
 
 protected:
-	String& GetLongName();
-	String& GetShortName();
-
 	double GetSampleRate();
 	double GetSecondsPerSample();
 
 	//virtual AudioParameterBool ConstructParameterBool() = 0;
 	//virtual AudioParameterFloat ConstructParameterFloat() = 0;
-	AudioParameterChoice &ConstructParameterChoice(
-		const char*, const char*, const char**, int);
-	AudioParameterInt &ConstructParameterInt(
-		const char*, const char*, int, int, int);
+	
+	AudioParameterChoice & ConstructParameterChoice(
+		const char *, const char**, int);
+	AudioParameterInt & ConstructParameterInt(
+		const char *, int, int, int);
 
 private:
-	String *longName;
-	String *shortName;
+	ModuleParameterSet paramSet;
+
+	String &fullName;
+	String &abbreviation;
 
 	double sampleRate;
 	double secondsPerSample;
+
+	String & GetFullName();
+	String & GetAbbreviation();
+
+	void RegisterParameter(AudioProcessorParameter &, ParameterType, String &);
+	String BuildParameterId(String &);
+	String BuildParameterName(String &);
 };

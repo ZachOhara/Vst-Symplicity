@@ -1,14 +1,16 @@
 #include "TuningProcessor.h"
 
 TuningProcessor::TuningProcessor() :
-	SynthModule("Tuning", "Tuning"),
-	modeParam(ConstructParameterChoice(" Mode", "_Mode", tuningOptions, 0)),
-	keyParam(ConstructParameterInt(" Key", "_Key", 0, KEYS - 1, 3))
+	SynthModule("Tuning\0", "Tuning\0"),
+	modeParam(ConstructParameterChoice("Temperament\0", tuningOptions, 0)),
+	keyParam(ConstructParameterInt("Key\0", 0, KEYS - 1, 3))
 {
 	InitializeStandardMap();
 	for (int i = 0; i < KEYS; i++) {
 		InitializeJustifiedMap(i);
 	}
+	std::cout << "===Construction finished===\n";
+	std::cout.flush();
 }
 
 TuningProcessor::~TuningProcessor()
@@ -73,12 +75,4 @@ void TuningProcessor::InitializeJustifiedMap(int key)
 		}
 		justifiedKeyMaps[key][i] = justifiedKeyMaps[key][i - (12 * octaveOffset)] * std::pow(2, octaveOffset);
 	}
-}
-
-ModuleParameterSet TuningProcessor::GetParameters()
-{
-	std::vector<ModuleParameter> paramList;
-	paramList.push_back({ &modeParam, PARAM_CHOICE, "Temperament" });
-	paramList.push_back({ &keyParam, PARAM_INT, "Key" });
-	return { paramList, GetLongName() };
 }
