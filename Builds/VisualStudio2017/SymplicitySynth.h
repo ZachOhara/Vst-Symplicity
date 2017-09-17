@@ -61,9 +61,9 @@ public:
 
 	void PrepareToPlay(double, int);
 	void ReleaseResources();
-	void ProcessBlock(AudioSampleBuffer&, MidiBuffer&);
+	void ProcessBlock(AudioSampleBuffer &, MidiBuffer &);
 
-	AudioProcessorEditor* ConstructEditor(AudioProcessor&);
+	AudioProcessorEditor & ConstructEditor(AudioProcessor &);
 
 private:
 	NoteStatus keyboard[NUM_NOTES];
@@ -78,6 +78,6 @@ private:
 
 	std::vector<SynthModule*> modules;
 	
-	void ProcessMidiMessages(MidiBuffer&);
+	void ProcessMidiMessages(MidiBuffer &);
 	void SynthesizeAudio();
 };

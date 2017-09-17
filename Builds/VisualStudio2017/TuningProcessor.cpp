@@ -1,16 +1,14 @@
 #include "TuningProcessor.h"
 
 TuningProcessor::TuningProcessor() :
-	SynthModule("Tuning\0", "Tuning\0"),
-	modeParam(ConstructParameterChoice("Temperament\0", tuningOptions, 0)),
-	keyParam(ConstructParameterInt("Key\0", 0, KEYS - 1, 3))
+	SynthModule("Tuning", "Tuning"),
+	modeParam(ConstructParameterChoice("Temperament", tuningOptions, 0)),
+	keyParam(ConstructParameterInt("Key", 0, KEYS - 1, 3))
 {
 	InitializeStandardMap();
 	for (int i = 0; i < KEYS; i++) {
 		InitializeJustifiedMap(i);
 	}
-	std::cout << "===Construction finished===\n";
-	std::cout.flush();
 }
 
 TuningProcessor::~TuningProcessor()

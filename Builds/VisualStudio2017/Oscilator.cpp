@@ -1,7 +1,7 @@
 #include "Oscilator.h"
 
-Oscilator::Oscilator(String &oscID) :
-	SynthModule(*(new String("Oscilator ")) + oscID, *(new String("Osc")) + oscID),
+Oscilator::Oscilator(String oscID) :
+	SynthModule("Oscilator " + oscID, "Osc" + oscID),
 	octaveParam(ConstructParameterChoice("Octave", octaveOptions, defaultOctave)),
 	waveformParam(ConstructParameterChoice("Waveform", waveformOptions, 0))
 {
@@ -11,12 +11,12 @@ Oscilator::~Oscilator()
 {
 }
 
-double Oscilator::GetSample(double* phase, double frequency)
+double Oscilator::GetSample(double &phase, double frequency)
 {
 	frequency *= std::pow(2, GetOctave());
-	*phase += frequency * GetSecondsPerSample();
-	*phase = *phase - ((int)*phase);
-	return GetUnalteredSample(*phase);
+	phase += frequency * GetSecondsPerSample();
+	phase = phase - ((int)phase);
+	return GetUnalteredSample(phase);
 }
 
 double Oscilator::GetUnalteredSample(double phase)

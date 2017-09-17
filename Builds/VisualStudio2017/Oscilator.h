@@ -36,10 +36,10 @@ class Oscilator :
 	public SynthModule
 {
 public:
-	Oscilator(String &);
+	Oscilator(String);
 	~Oscilator();
 
-	double GetSample(double*, double);
+	double GetSample(double &, double);
 	
 private:
 	AudioParameterChoice &octaveParam;

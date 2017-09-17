@@ -1,11 +1,6 @@
 #include "SynthModule.h"
 
-SynthModule::SynthModule(const char * name, const char * abbrev) :
-	SynthModule(*(new String(std::string(name))), *(new String(std::string(abbrev))))
-{
-}
-
-SynthModule::SynthModule(String &name, String &abbrev) :
+SynthModule::SynthModule(String name, String abbrev) :
 	paramSet(ModuleParameterSet{ std::vector<ModuleParameter*>(), name }),
 	fullName(name),
 	abbreviation(abbrev)
@@ -38,12 +33,13 @@ double SynthModule::GetSecondsPerSample()
 }
 
 AudioParameterChoice & SynthModule::ConstructParameterChoice(
-	const char * csName,
+	//const char * csName,
+	String name,
 	const char **options,
 	int initial
 )
 {
-	String &name = *(new String(csName));
+	//String &name = *(new String(csName));
 	AudioParameterChoice &newParam = *(new AudioParameterChoice(
 		BuildParameterId(name),
 		BuildParameterName(name),
@@ -55,14 +51,15 @@ AudioParameterChoice & SynthModule::ConstructParameterChoice(
 }
 
 AudioParameterInt & SynthModule::ConstructParameterInt(
-	const char * csName,
+	//const char * csName,
+	String name,
 	int minValue,
 	int maxValue,
 	int initialValue
 )
 {
 
-	String &name = *(new String(csName));
+	//String &name = *(new String(csName));
 	AudioParameterInt &newParam = *(new AudioParameterInt (
 		BuildParameterId(name),
 		BuildParameterName(name),
@@ -75,30 +72,33 @@ AudioParameterInt & SynthModule::ConstructParameterInt(
 }
 
 void SynthModule::RegisterParameter(
-	AudioProcessorParameter &newParam,
+	AudioProcessorParameterWithID &newParam,
 	ParameterType type,
-	String &name)
+	String name)
 {
 	ModuleParameter *data = new ModuleParameter{ newParam, type, name };
 	paramSet.params.push_back(data);
+
+	std::cout << "--Registering '" << data->paramName << "' (" << data->parameter.name << ")\n";
+	std::cout.flush();
 }
 
-String SynthModule::BuildParameterId(String &name)
+String SynthModule::BuildParameterId(String name)
 {
-	return /*GetAbbreviation() +*/ "_" + name;
+	return GetAbbreviation() + "_" + name;
 }
 
-String SynthModule::BuildParameterName(String &name)
+String SynthModule::BuildParameterName(String name)
 {
-	return /* GetFullName() + */ " " + name;
+	return GetFullName() + " " + name;
 }
 
-String & SynthModule::GetFullName()
+String SynthModule::GetFullName()
 {
 	return fullName;
 }
 
-String & SynthModule::GetAbbreviation()
+String SynthModule::GetAbbreviation()
 {
 	return abbreviation;
 }

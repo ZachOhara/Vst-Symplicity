@@ -37,14 +37,14 @@ void SymplicitySynth::ReleaseResources()
 	debugLog.CloseDebugLogFile();
 }
 
-AudioProcessorEditor * SymplicitySynth::ConstructEditor(AudioProcessor &processor)
+AudioProcessorEditor & SymplicitySynth::ConstructEditor(AudioProcessor &processor)
 {
 	std::vector<ModuleParameterSet*> parameters;
 	for (int i = 0; i < modules.size(); i++)
 	{
 		parameters.push_back(&(modules[i]->GetParameterSet()));
 	}
-	return new SymplicityEditor(processor, parameters);
+	return *(new SymplicityEditor(processor, parameters));
 }
 
 void SymplicitySynth::ProcessBlock(AudioSampleBuffer &audioBuffer, MidiBuffer &midiBuffer)
@@ -104,7 +104,7 @@ void SymplicitySynth::SynthesizeAudio()
 
 				double oscValues[NUM_OSCILATORS];
 				for (int i = 0; i < NUM_OSCILATORS; i++) {
-					oscValues[i] = oscilators[i]->GetSample(&note.phase[i], frequency);
+					oscValues[i] = oscilators[i]->GetSample(note.phase[i], frequency);
 				}
 
 				// TODO mix the values

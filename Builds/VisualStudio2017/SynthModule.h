@@ -10,9 +10,9 @@ enum ParameterType {
 };
 
 struct ModuleParameter {
-	AudioProcessorParameter &parameter;
+	AudioProcessorParameterWithID &parameter;
 	ParameterType type;
-	String &paramName;
+	String paramName;
 };
 
 struct ModuleParameterSet {
@@ -23,8 +23,7 @@ struct ModuleParameterSet {
 class SynthModule
 {
 public:
-	SynthModule(const char *, const char *);
-	SynthModule(String &, String &);
+	SynthModule(String, String);
 	~SynthModule();
 
 	void SetSampleRate(double);
@@ -39,23 +38,23 @@ protected:
 	//virtual AudioParameterFloat ConstructParameterFloat() = 0;
 	
 	AudioParameterChoice & ConstructParameterChoice(
-		const char *, const char**, int);
+		String, const char**, int);
 	AudioParameterInt & ConstructParameterInt(
-		const char *, int, int, int);
+		String, int, int, int);
 
 private:
 	ModuleParameterSet paramSet;
 
-	String &fullName;
-	String &abbreviation;
+	String fullName;
+	String abbreviation;
 
 	double sampleRate;
 	double secondsPerSample;
 
-	String & GetFullName();
-	String & GetAbbreviation();
+	String GetFullName();
+	String GetAbbreviation();
 
-	void RegisterParameter(AudioProcessorParameter &, ParameterType, String &);
-	String BuildParameterId(String &);
-	String BuildParameterName(String &);
+	void RegisterParameter(AudioProcessorParameterWithID &, ParameterType, String);
+	String BuildParameterId(String);
+	String BuildParameterName(String);
 };
