@@ -6,13 +6,13 @@ ParamControlChoice::ParamControlChoice(AudioParameterChoice &param) :
 	StringArray options = param.choices;
 	for (int i = 0; i < options.size(); i++)
 	{
-		ToggleButton button;
+		ToggleButton &button = *(new ToggleButton());
 		button.addListener(this);
 		button.setRadioGroupId(1, dontSendNotification);
 		buttons.push_back(&button);
 		addAndMakeVisible(button);
 
-		Label label;
+		Label &label = *(new Label());
 		label.setText(options[i], dontSendNotification);
 		labels.push_back(&label);
 		addAndMakeVisible(label);

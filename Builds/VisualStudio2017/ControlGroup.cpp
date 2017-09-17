@@ -1,8 +1,8 @@
 #include "ControlGroup.h"
 
-ControlGroup::ControlGroup(ModuleParameterSet &parameterSet) :
-	parameters(parameterSet)//,
-	//outline(GroupComponent(parameterSet.sectionName, parameterSet.sectionName))
+ControlGroup::ControlGroup(ModuleParameterSet &params) :
+	parameterSet(params),
+	outline(parameterSet.moduleName, parameterSet.moduleName)
 {
 }
 
@@ -11,25 +11,40 @@ ControlGroup::~ControlGroup()
 }
 
 void ControlGroup::AddParameterControl(
-	String &name,
+	String name,
 	int x, int y, int width, int height,
 	bool displayTitle
 )
 {
-	ModuleParameter &parameter = FindParameter(name);
-	ParamDisplay &control = ParamDisplay(parameter, displayTitle);
+	ModuleParameter parameter = *FindParameter(name);
+	if (&parameter == NULL)
+	{
+		// Reporting and handling should be done from within FindParameter()
+		return;
+	}
+	ParamDisplay &control = *(new ParamDisplay(parameter, displayTitle));
 	control.setTopLeftPosition(x, y);
 	control.setSize(width, height);
 	addAndMakeVisible(control);
 }
 
-ModuleParameter &ControlGroup::FindParameter(String &name)
+ModuleParameter * ControlGroup::FindParameter(String name)
 {
-	for (int i = 0; i < parameters.parameters.size(); i++)
+	for (int i = 0; i < parameterSet.params.size(); i++)
 	{
-		if (parameters.parameters[i].parameter->getName(name.length()) == name)
+		if (parameterSet.params[i]->paramName == name)
 		{
-			return parameters.parameters[i];
+			return parameterSet.params[i];
 		}
 	}
+	// Parameter does not exist
+	std::cerr << "ERR cannot find param '" << name
+		<< "' in module '" << parameterSet.moduleName << "'\n";
+	std::cerr.flush();
+	return NULL;
+}
+
+void ControlGroup::paint(Graphics &g)
+{
+	g.fillAll(Colours::red);
 }

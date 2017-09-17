@@ -12,11 +12,11 @@ class ParamDisplay :
 	public Component
 {
 public:
-	ParamDisplay(ModuleParameter&, bool);
+	ParamDisplay(ModuleParameter &, bool);
 	~ParamDisplay();
 
 private:
-	Label *title;
+	Label title;
 	ParamControl *controller;
 
 	virtual void resized() override;

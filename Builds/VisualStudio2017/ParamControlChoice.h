@@ -11,7 +11,7 @@ class ParamControlChoice :
 	Button::Listener
 {
 public:
-	ParamControlChoice(AudioParameterChoice&);
+	ParamControlChoice(AudioParameterChoice &);
 	~ParamControlChoice();
 
 	virtual int CalculateHeight() override;

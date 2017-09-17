@@ -9,13 +9,13 @@ class SymplicityEditor :
 	public AudioProcessorEditor
 {
 public:
-	SymplicityEditor(AudioProcessor&, std::vector<ModuleParameterSet*>);
+	SymplicityEditor(AudioProcessor &, std::vector<ModuleParameterSet*> &);
 	~SymplicityEditor();
 
 private:
-	std::vector<ModuleParameterSet*> &modules;
+	std::vector<ModuleParameterSet*> modules;
 
-	ModuleParameterSet &FindModule(String &name);
+	ModuleParameterSet * FindModule(String &name);
 
 	virtual void paint(Graphics&) override;
 };

@@ -8,15 +8,19 @@ class ControlGroup :
 	public Component
 {
 public:
-	ControlGroup(ModuleParameterSet&);
+	ControlGroup(ModuleParameterSet &);
 	~ControlGroup();
 
-	void AddParameterControl(String&, int, int, int, int, bool);
+	void AddParameterControl(String, int, int, int, int, bool);
+
+	// TODO make this private
 
 private:
-	ModuleParameterSet &parameters;
-	//GroupComponent &outline;
+	ModuleParameterSet parameterSet;
+	GroupComponent outline;
 
-	ModuleParameter &FindParameter(String &name);
+	ModuleParameter * FindParameter(String);
+
+	virtual void paint(Graphics&) override;
 };
 
