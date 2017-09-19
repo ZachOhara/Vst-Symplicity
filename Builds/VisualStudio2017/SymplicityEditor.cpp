@@ -9,7 +9,7 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		String name = "Oscilator ";
-		name += i;
+		name += (i + 1);
 
 		ControlGroup &oscilator = *(new ControlGroup(*FindModule(name)));
 		oscilator.setTopLeftPosition(250, 25 + (i * 150));

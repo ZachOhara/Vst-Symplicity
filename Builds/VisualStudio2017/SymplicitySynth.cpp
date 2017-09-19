@@ -5,7 +5,7 @@ SymplicitySynth::SymplicitySynth()
 	modules.push_back(&tuningProcessor);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
-		oscilators.push_back(new Oscilator(String(std::to_string(i))));
+		oscilators.push_back(new Oscilator(String(std::to_string(i + 1))));
 		modules.push_back(oscilators[i]);
 	}
 }
