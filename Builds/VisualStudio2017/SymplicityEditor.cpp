@@ -45,5 +45,5 @@ ModuleParameterSet * SymplicityEditor::FindModule(String &name)
 
 void SymplicityEditor::paint(Graphics &g)
 {
-	g.fillAll(Colours::white);
+	g.fillAll(Colours::darkcyan);
 }
