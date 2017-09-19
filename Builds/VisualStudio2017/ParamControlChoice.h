@@ -8,8 +8,7 @@ static const int buttonSize = 20; // 1d size of the button
 static const int labelSpace = 5; // gap between button and label
 
 class ParamControlChoice :
-	public ParamControl,
-	Button::Listener
+	public ParamControl
 {
 public:
 	ParamControlChoice(AudioParameterChoice &);
@@ -17,13 +16,15 @@ public:
 
 	virtual int CalculateHeight() override;
 
-	void buttonClicked(Button *button) override;
+	virtual void mouseDown(const MouseEvent &) override;
 
 private:
 	AudioParameterChoice &parameter;
 
 	std::vector<ToggleButton*> buttons;
 	std::vector<Label*> labels;
+
+	void ChangeSelection(int);
 
 	virtual void resized() override;
 };

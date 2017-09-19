@@ -33,13 +33,11 @@ double SynthModule::GetSecondsPerSample()
 }
 
 AudioParameterChoice & SynthModule::ConstructParameterChoice(
-	//const char * csName,
 	String name,
 	const char **options,
 	int initial
 )
 {
-	//String &name = *(new String(csName));
 	AudioParameterChoice &newParam = *(new AudioParameterChoice(
 		BuildParameterId(name),
 		BuildParameterName(name),
@@ -51,15 +49,12 @@ AudioParameterChoice & SynthModule::ConstructParameterChoice(
 }
 
 AudioParameterInt & SynthModule::ConstructParameterInt(
-	//const char * csName,
 	String name,
 	int minValue,
 	int maxValue,
 	int initialValue
 )
 {
-
-	//String &name = *(new String(csName));
 	AudioParameterInt &newParam = *(new AudioParameterInt (
 		BuildParameterId(name),
 		BuildParameterName(name),
@@ -78,9 +73,6 @@ void SynthModule::RegisterParameter(
 {
 	ModuleParameter *data = new ModuleParameter{ newParam, type, name };
 	paramSet.params.push_back(data);
-
-	std::cout << "--Registering '" << data->paramName << "' (" << data->parameter.name << ")\n";
-	std::cout.flush();
 }
 
 String SynthModule::BuildParameterId(String name)

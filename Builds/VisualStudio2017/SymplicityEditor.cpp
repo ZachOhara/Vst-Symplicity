@@ -15,10 +15,8 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 		oscilator.setTopLeftPosition(250, 25 + (i * 150));
 		oscilator.setSize(200, 125);
 
-		oscilator.AddParameterControl("Octave", 0, 0, 200, 125, false);
-
-		//debugLog.stream << name << "\n";
-		//debugLog.stream << (oscilator->FindParameter("Octave")) << "\n";
+		oscilator.AddParameterControl("Octave", 5, 0, 85, 125, false);
+		oscilator.AddParameterControl("Waveform", 90, 0, 110, 125, false);
 
 		addAndMakeVisible(oscilator);
 	}
@@ -45,5 +43,5 @@ ModuleParameterSet * SymplicityEditor::FindModule(String &name)
 
 void SymplicityEditor::paint(Graphics &g)
 {
-	g.fillAll(Colours::darkcyan);
+	g.fillAll(Colours::white);
 }

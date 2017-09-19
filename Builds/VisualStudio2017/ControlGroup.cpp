@@ -4,6 +4,8 @@ ControlGroup::ControlGroup(ModuleParameterSet &params) :
 	parameterSet(params),
 	outline(parameterSet.moduleName, parameterSet.moduleName)
 {
+	outline.setColour(outline.outlineColourId, Colours::black);
+	outline.setColour(outline.textColourId, Colours::black);
 	addAndMakeVisible(outline);
 }
 

@@ -1,6 +1,7 @@
 #include "ParamDisplay.h"
 
-ParamDisplay::ParamDisplay(ModuleParameter &parameter, bool showTitle)
+ParamDisplay::ParamDisplay(ModuleParameter &parameter, bool showTitle) :
+	showTitle(showTitle)
 {
 	if (showTitle)
 	{
@@ -27,12 +28,21 @@ ParamDisplay::~ParamDisplay()
 
 void ParamDisplay::resized()
 {
-	int topBuffer = getHeight() - titleHeight
-		- controller->CalculateHeight();
+	int topBuffer = getHeight() - controller->CalculateHeight();
 	topBuffer /= 2;
-	int availableWidth = getWidth() - (sideBuffer * 2);
-	title.setTopLeftPosition(sideBuffer, topBuffer);
-	title.setSize(availableWidth, titleHeight);
-	controller->setTopLeftPosition(sideBuffer, topBuffer + titleHeight);
+	int availableWidth = getWidth();
+
+	// Titles are not yet supported
+	/*
+	if (showTitle)
+	{
+		topBuffer -= (titleHeight / 2);
+		title.setTopLeftPosition(sideBuffer, topBuffer);
+		title.setSize(availableWidth, titleHeight);
+		controller->setTopLeftPosition(sideBuffer, topBuffer + titleHeight);
+		controller->setSize(availableWidth, controller->CalculateHeight());
+	}
+	*/
+	controller->setTopLeftPosition(0, topBuffer + outlineCorrection);
 	controller->setSize(availableWidth, controller->CalculateHeight());
 }

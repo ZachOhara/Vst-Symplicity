@@ -7,19 +7,22 @@ ParamControlChoice::ParamControlChoice(AudioParameterChoice &param) :
 	for (int i = 0; i < options.size(); i++)
 	{
 		ToggleButton &button = *(new ToggleButton());
-		button.addListener(this);
 		button.setRadioGroupId(1, dontSendNotification);
+		button.setColour(button.tickColourId, Colours::black);
 		buttons.push_back(&button);
 		addAndMakeVisible(button);
 
 		Label &label = *(new Label());
 		label.setText(options[i], dontSendNotification);
+		label.setColour(label.textColourId, Colours::black);
 		labels.push_back(&label);
 		addAndMakeVisible(label);
 	}
 
 	int currentIndex = param.getIndex();
 	buttons[currentIndex]->triggerClick();
+
+	addMouseListener(this, true);
 }
 
 ParamControlChoice::~ParamControlChoice()
@@ -31,15 +34,39 @@ int ParamControlChoice::CalculateHeight() {
 		+ (buttonSize * (int)buttons.size());
 }
 
-void ParamControlChoice::buttonClicked(Button *button)
+void ParamControlChoice::mouseDown(const MouseEvent &event)
 {
-	for (int i = 0; i < buttons.size(); i++)
+	// Warning: this is probably not going to get extensively tested
+	// Errors are likely
+	// If there is undefined behavior later, this is a prime suspect
+	if (event.eventComponent == this)
 	{
-		if (button == buttons[i])
+		for (int i = 0; i < buttons.size(); i++)
 		{
-			parameter.setValueNotifyingHost(i);
+			int buttonY = buttons[i]->getY();
+			if (buttonY <= event.y && event.y < buttonY + buttonSize)
+			{
+				ChangeSelection(i);
+				break;
+			}
 		}
 	}
+	else
+	{
+		for (int i = 0; i < buttons.size(); i++)
+		{
+			if (event.eventComponent == buttons[i] || event.eventComponent == labels[i])
+			{
+				ChangeSelection(i);
+			}
+		}
+	}
+}
+
+void ParamControlChoice::ChangeSelection(int index)
+{
+	parameter.setValueNotifyingHost(index);
+	buttons[index]->triggerClick();
 }
 
 void ParamControlChoice::resized()

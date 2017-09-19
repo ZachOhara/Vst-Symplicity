@@ -5,7 +5,7 @@
 #include "ParamControl.h"
 #include "ParamControlChoice.h"
 
-static const int sideBuffer = 10;
+static const int outlineCorrection = 5; // determined experimentally to correct for the outline
 static const int titleHeight = 20;
 
 class ParamDisplay :
@@ -16,6 +16,7 @@ public:
 	~ParamDisplay();
 
 private:
+	bool showTitle;
 	Label title;
 	ParamControl *controller;
 
