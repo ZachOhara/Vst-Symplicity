@@ -8,8 +8,6 @@
 #include "Oscilator.h"
 #include "SymplicityEditor.h"
 
-//#include "../Source/PluginEditor.h"
-
 // Note that NUM_NOTES is also defined in TuningProcessor
 static const int NUM_NOTES = 128;
 static const int NUM_OSCILATORS = 3;
@@ -56,7 +54,7 @@ struct NoteStatus
 class SymplicitySynth
 {
 public:
-	SymplicitySynth();
+	SymplicitySynth(AudioProcessor &);
 	~SymplicitySynth();
 
 	void PrepareToPlay(double, int);

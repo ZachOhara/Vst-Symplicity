@@ -1,12 +1,21 @@
 #include "SymplicitySynth.h"
 
-SymplicitySynth::SymplicitySynth()
+SymplicitySynth::SymplicitySynth(AudioProcessor &parent)
 {
 	modules.push_back(&tuningProcessor);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		oscilators.push_back(new Oscilator(String(std::to_string(i + 1))));
 		modules.push_back(oscilators[i]);
+	}
+	// Now that all modules have been created, register the parameters
+	for (int i = 0; i < modules.size(); i++)
+	{
+		std::vector<ModuleParameter *> parameters = modules[i]->GetParameterSet().params;
+		for (int j = 0; j < parameters.size(); j++)
+		{
+			parent.addParameter(&parameters[j]->parameter);
+		}
 	}
 }
 

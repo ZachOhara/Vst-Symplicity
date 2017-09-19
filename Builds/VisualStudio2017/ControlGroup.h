@@ -20,6 +20,5 @@ private:
 	ModuleParameter * FindParameter(String);
 
 	virtual void resized() override;
-	virtual void paint(Graphics&) override;
 };
 

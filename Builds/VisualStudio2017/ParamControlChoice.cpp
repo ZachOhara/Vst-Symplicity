@@ -27,8 +27,8 @@ ParamControlChoice::~ParamControlChoice()
 }
 
 int ParamControlChoice::CalculateHeight() {
-	return (buttonGap * (buttons.size() - 1))
-		+ (buttonSize * buttons.size());
+	return (buttonGap * ((int)buttons.size() - 1))
+		+ (buttonSize * (int)buttons.size());
 }
 
 void ParamControlChoice::buttonClicked(Button *button)
@@ -37,7 +37,7 @@ void ParamControlChoice::buttonClicked(Button *button)
 	{
 		if (button == buttons[i])
 		{
-			parameter = i; // this is what it says in the docs, idk
+			parameter.setValueNotifyingHost(i);
 		}
 	}
 }
@@ -49,8 +49,9 @@ void ParamControlChoice::resized()
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		buttons[i]->setTopLeftPosition(0, yPos);
-		buttons[i]->setSize(buttonSize, buttonSize);
-		labels[i]->setTopLeftPosition(buttonSize, yPos);
+		buttons[i]->setSize(buttonSize + labelSpace, buttonSize);
+		labels[i]->setTopLeftPosition(buttonSize + labelSpace, yPos);
 		labels[i]->setSize(labelWidth, buttonSize);
+		yPos += buttonSize;
 	}
 }

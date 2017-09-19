@@ -49,8 +49,3 @@ void ControlGroup::resized()
 {
 	outline.setSize(getWidth(), getHeight());
 }
-
-void ControlGroup::paint(Graphics &g)
-{
-	//g.fillAll(Colours::red);
-}
