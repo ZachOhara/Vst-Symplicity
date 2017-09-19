@@ -13,14 +13,13 @@ public:
 
 	void AddParameterControl(String, int, int, int, int, bool);
 
-	// TODO make this private
-
 private:
 	ModuleParameterSet parameterSet;
 	GroupComponent outline;
 
 	ModuleParameter * FindParameter(String);
 
+	virtual void resized() override;
 	virtual void paint(Graphics&) override;
 };
 

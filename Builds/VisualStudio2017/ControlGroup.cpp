@@ -4,6 +4,7 @@ ControlGroup::ControlGroup(ModuleParameterSet &params) :
 	parameterSet(params),
 	outline(parameterSet.moduleName, parameterSet.moduleName)
 {
+	addAndMakeVisible(outline);
 }
 
 ControlGroup::~ControlGroup()
@@ -44,7 +45,12 @@ ModuleParameter * ControlGroup::FindParameter(String name)
 	return NULL;
 }
 
+void ControlGroup::resized()
+{
+	outline.setSize(getWidth(), getHeight());
+}
+
 void ControlGroup::paint(Graphics &g)
 {
-	g.fillAll(Colours::red);
+	//g.fillAll(Colours::red);
 }
