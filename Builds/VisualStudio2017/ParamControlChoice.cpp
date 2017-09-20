@@ -65,7 +65,7 @@ void ParamControlChoice::mouseDown(const MouseEvent &event)
 
 void ParamControlChoice::ChangeSelection(int index)
 {
-	parameter.setValueNotifyingHost(index);
+	parameter = index;
 	buttons[index]->triggerClick();
 }
 

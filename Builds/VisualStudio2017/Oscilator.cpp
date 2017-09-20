@@ -36,11 +36,9 @@ double Oscilator::GetUnalteredSample(double phase)
 }
 
 int Oscilator::GetOctave() {
-	return 0;
-	// return octaveParam->getIndex() - defaultOctave;
+	return octaveParam.getIndex() - defaultOctave;
 }
 
 Waveform Oscilator::GetWaveform() {
-	return SINE;
-	// return (Waveform)waveformParam->getIndex();
+	return (Waveform)waveformParam.getIndex();
 }
