@@ -20,13 +20,19 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 
 		addAndMakeVisible(oscilator);
 	}
+
+	ControlGroup &tuning = *(new ControlGroup(*FindModule("Tuning")));
+	tuning.setTopLeftPosition(25, 25);
+	tuning.setSize(200, 150);
+	tuning.AddParameterControl("Temperament", 5, 0, 200, 75, true);
+	addAndMakeVisible(tuning);
 }
 
 SymplicityEditor::~SymplicityEditor()
 {
 }
 
-ModuleParameterSet * SymplicityEditor::FindModule(String &name)
+ModuleParameterSet * SymplicityEditor::FindModule(String name)
 {
 	for (int i = 0; i < modules.size(); i++)
 	{

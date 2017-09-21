@@ -28,7 +28,7 @@ double TuningProcessor::GetFrequency(int noteID) {
 
 TuningMode TuningProcessor::GetTuningMode()
 {
-	return EQUAL_TEMPERAMENT; // TODO get from parameter
+	return (TuningMode)(int)modeParam;
 }
 
 int TuningProcessor::GetKey()

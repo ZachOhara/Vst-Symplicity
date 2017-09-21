@@ -15,7 +15,7 @@ public:
 private:
 	std::vector<ModuleParameterSet*> modules;
 
-	ModuleParameterSet * FindModule(String &name);
+	ModuleParameterSet * FindModule(String);
 
 	virtual void paint(Graphics&) override;
 };
