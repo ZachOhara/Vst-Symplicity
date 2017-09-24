@@ -24,7 +24,8 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 	ControlGroup &tuning = *(new ControlGroup(*FindModule("Tuning")));
 	tuning.setTopLeftPosition(25, 25);
 	tuning.setSize(200, 150);
-	tuning.AddParameterControl("Temperament", 5, 0, 200, 75, true);
+	tuning.AddParameterControl("Temperament", 10, 5, 180, 75, true);
+	tuning.AddParameterControl("Key", 10, 80, 180, 50, true);
 	addAndMakeVisible(tuning);
 }
 

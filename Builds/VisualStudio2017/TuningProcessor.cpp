@@ -33,7 +33,7 @@ TuningMode TuningProcessor::GetTuningMode()
 
 int TuningProcessor::GetKey()
 {
-	return 3; // TODO get from parameter
+	return (int)keyParam;
 }
 
 void TuningProcessor::InitializeStandardMap()
