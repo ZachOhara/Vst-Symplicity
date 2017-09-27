@@ -10,7 +10,10 @@ ParamControlNumber::~ParamControlNumber()
 
 void ParamControlNumber::sliderValueChanged(Slider *changedSlider)
 {
-	RecieveNewValue(slider->getValue());
+	if (changedSlider == slider)
+	{
+		RecieveNewValue((float)slider->getValue());
+	}
 }
 
 void ParamControlNumber::SetSlider(Slider &newSlider)
@@ -22,9 +25,14 @@ void ParamControlNumber::SetSlider(Slider &newSlider)
 	addAndMakeVisible(slider);
 }
 
+void ParamControlNumber::SetSkewFactor(double skewFactor)
+{
+	slider->setSkewFactor(skewFactor);
+}
+
 int ParamControlNumber::CalculateHeight()
 {
-	return sliderHeight;// *1.5;
+	return sliderHeight;
 }
 
 void ParamControlNumber::resized()

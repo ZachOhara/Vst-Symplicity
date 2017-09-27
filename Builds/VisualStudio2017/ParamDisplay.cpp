@@ -17,8 +17,12 @@ ParamDisplay::ParamDisplay(ModuleParameter &parameter, bool showTitle) :
 		controller = new ParamControlChoice(static_cast<AudioParameterChoice&>(parameter.parameter));
 		break;
 	case PARAM_FLOAT:
+		controller = new ParamControlFloat(static_cast<AudioParameterFloat&>(parameter.parameter));
+		controller->SetSkewFactor(parameter.skewFactor);
+		break;
 	case PARAM_INT:
 		controller = new ParamControlInt(static_cast<AudioParameterInt&>(parameter.parameter));
+		controller->SetSkewFactor(parameter.skewFactor);
 		break;
 	}
 	addAndMakeVisible(*controller);

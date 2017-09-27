@@ -3,6 +3,7 @@
 SymplicitySynth::SymplicitySynth(AudioProcessor &parent)
 {
 	modules.push_back(&tuningProcessor);
+	modules.push_back(&filterProcessor);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		oscilators.push_back(new Oscilator(String(std::to_string(i + 1))));
@@ -11,6 +12,7 @@ SymplicitySynth::SymplicitySynth(AudioProcessor &parent)
 	// Now that all modules have been created, register the parameters
 	for (int i = 0; i < modules.size(); i++)
 	{
+		parent.addListener(modules[i]);
 		std::vector<ModuleParameter *> parameters = modules[i]->GetParameterSet().params;
 		for (int j = 0; j < parameters.size(); j++)
 		{
@@ -35,6 +37,7 @@ void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 	{
 		modules[i]->SetSampleRate(newSampleRate);
 	}
+	filterProcessor.RecalculateValues();
 
 	debugLog.OpenDebugLogFile();
 	//debugLog.stream << "Starting debug log\n";
@@ -43,6 +46,7 @@ void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 void SymplicitySynth::ReleaseResources()
 {
 	free(sampleBuffer);
+	filterProcessor.ClearSamples();
 	debugLog.CloseDebugLogFile();
 }
 
@@ -126,9 +130,10 @@ void SymplicitySynth::SynthesizeAudio()
 			}
 		}
 		// TODO add noise
-		// TODO apply filter
+		// Apply the filter
+		sampleBuffer[frame] = filterProcessor.GetNextOutput(sampleBuffer[frame]);
 		// TODO apply master volume
-		sampleBuffer[frame] *= 0.25; // stop clipping
+		sampleBuffer[frame] *= 0.125; // stop clipping
 
 		// TODO tick the progressive pitch bend
 	}

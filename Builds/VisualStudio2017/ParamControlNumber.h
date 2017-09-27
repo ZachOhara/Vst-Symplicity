@@ -3,7 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParamControl.h"
 
-static const int sliderHeight = 40;
+static const int sliderHeight = 25;
 
 class ParamControlNumber :
 	public ParamControl,
@@ -15,6 +15,7 @@ public:
 
 	virtual void sliderValueChanged(Slider *) override;
 
+	virtual void SetSkewFactor(double) override;
 	virtual int CalculateHeight() override;
 
 protected:

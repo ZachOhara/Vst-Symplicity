@@ -52,26 +52,48 @@ AudioParameterInt & SynthModule::ConstructParameterInt(
 	String name,
 	int minValue,
 	int maxValue,
-	int initialValue
+	int initialValue,
+	double skewFactor
 )
 {
-	AudioParameterInt &newParam = *(new AudioParameterInt (
+	AudioParameterInt &newParam = *(new AudioParameterInt(
 		BuildParameterId(name),
 		BuildParameterName(name),
 		minValue,
 		maxValue,
 		initialValue
 	));
-	RegisterParameter(newParam, PARAM_INT, name);
+	RegisterParameter(newParam, PARAM_INT, name, skewFactor);
+	return newParam;
+}
+
+AudioParameterFloat & SynthModule::ConstructParameterFloat(
+	String name,
+	float minValue,
+	float maxValue,
+	float initialValue,
+	double skewFactor
+)
+{
+	AudioParameterFloat &newParam = *(new AudioParameterFloat(
+		BuildParameterId(name),
+		BuildParameterName(name),
+		minValue,
+		maxValue,
+		initialValue
+	));
+	RegisterParameter(newParam, PARAM_FLOAT, name, skewFactor);
 	return newParam;
 }
 
 void SynthModule::RegisterParameter(
 	AudioProcessorParameterWithID &newParam,
 	ParameterType type,
-	String name)
+	String name,
+	double skewFactor
+)
 {
-	ModuleParameter *data = new ModuleParameter{ newParam, type, name };
+	ModuleParameter *data = new ModuleParameter{ newParam, type, name, skewFactor };
 	paramSet.params.push_back(data);
 }
 
@@ -93,4 +115,24 @@ String SynthModule::GetFullName()
 String SynthModule::GetAbbreviation()
 {
 	return abbreviation;
+}
+
+void SynthModule::HandleParameterChange(AudioProcessorParameter *)
+{
+	// take no action
+}
+
+void SynthModule::audioProcessorChanged(AudioProcessor *)
+{
+	// take no action
+}
+
+void SynthModule::audioProcessorParameterChanged(AudioProcessor *proc, int index, float newValue)
+{
+	for (int i = 0; i < paramSet.params.size(); i++) {
+		if (index == paramSet.params[i]->parameter.getParameterIndex())
+		{
+			HandleParameterChange(&(paramSet.params[i]->parameter));
+		}
+	}
 }

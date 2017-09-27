@@ -5,6 +5,7 @@
 #include "ParamControl.h"
 #include "ParamControlChoice.h"
 #include "ParamControlInt.h"
+#include "ParamControlFloat.h"
 
 static const int outlineCorrection = 4; // determined experimentally to correct for the outline
 static const int titleHeight = 20;

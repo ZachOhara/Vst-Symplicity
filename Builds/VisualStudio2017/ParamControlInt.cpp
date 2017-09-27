@@ -3,15 +3,13 @@
 ParamControlInt::ParamControlInt(AudioParameterInt &param) :
 	parameter(param)
 {
-	Slider &slider = *(new Slider());
+	Slider &newslider = *(new Slider());
 	
-	slider.setMinValue(parameter.getRange().getStart());
-	slider.setMaxValue(parameter.getRange().getEnd());
-	slider.setRange(parameter.getRange().getStart(),
-	parameter.getRange().getEnd(), 1);
-	slider.setValue(parameter, dontSendNotification);
+	newslider.setRange(parameter.getRange().getStart(),
+		parameter.getRange().getEnd(), 1);
+	newslider.setValue(parameter, dontSendNotification);
 	
-	SetSlider(slider);
+	SetSlider(newslider);
 }
 
 ParamControlInt::~ParamControlInt()

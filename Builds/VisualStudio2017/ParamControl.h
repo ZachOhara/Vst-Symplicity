@@ -9,6 +9,8 @@ public:
 	ParamControl();
 	~ParamControl();
 
+	virtual void SetSkewFactor(double);
+
 	virtual int CalculateWidth();
 	virtual int CalculateHeight();
 };

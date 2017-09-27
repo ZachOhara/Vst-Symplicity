@@ -8,6 +8,11 @@ ParamControl::~ParamControl()
 {
 }
 
+void ParamControl::SetSkewFactor(double skewFactor)
+{
+	// overridable
+}
+
 int ParamControl::CalculateWidth()
 {
 	return 0;

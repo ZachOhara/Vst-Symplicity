@@ -6,6 +6,7 @@
 #include "DebugLogger.h"
 #include "TuningProcessor.h"
 #include "Oscilator.h"
+#include "FilterProcessor.h"
 #include "SymplicityEditor.h"
 
 // Note that NUM_NOTES is also defined in TuningProcessor
@@ -73,6 +74,7 @@ private:
 
 	TuningProcessor tuningProcessor;
 	std::vector<Oscilator*> oscilators;
+	FilterProcessor filterProcessor;
 
 	std::vector<SynthModule*> modules;
 	

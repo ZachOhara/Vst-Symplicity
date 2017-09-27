@@ -27,6 +27,13 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 	tuning.AddParameterControl("Temperament", 10, 5, 180, 75, true);
 	tuning.AddParameterControl("Key", 10, 80, 180, 50, true);
 	addAndMakeVisible(tuning);
+
+	ControlGroup &filter = *(new ControlGroup(*FindModule("Filter")));
+	filter.setTopLeftPosition(500, 25);
+	filter.setSize(200, 450);
+	filter.AddParameterControl("Cutoff", 10, 25, 180, 50, true);
+	filter.AddParameterControl("Resonance", 10, 75, 180, 50, true);
+	addAndMakeVisible(filter);
 }
 
 SymplicityEditor::~SymplicityEditor()
