@@ -4,6 +4,7 @@ SymplicitySynth::SymplicitySynth(AudioProcessor &parent)
 {
 	modules.push_back(&tuningProcessor);
 	modules.push_back(&filterProcessor);
+	modules.push_back(&oscMixer);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		oscilators.push_back(new Oscilator(String(std::to_string(i + 1))));
@@ -120,9 +121,7 @@ void SymplicitySynth::SynthesizeAudio()
 					oscValues[i] = oscilators[i]->GetSample(note.phase[i], frequency);
 				}
 
-				// TODO mix the values
-				double sample = oscValues[0] + oscValues[1] + oscValues[2];
-				sample /= 3;
+				double sample = oscMixer.MixValues(oscValues);
 
 				// TODO apply envelope
 
@@ -133,7 +132,6 @@ void SymplicitySynth::SynthesizeAudio()
 		// Apply the filter
 		sampleBuffer[frame] = filterProcessor.GetNextOutput(sampleBuffer[frame]);
 		// TODO apply master volume
-		sampleBuffer[frame] *= 0.125; // stop clipping
 
 		// TODO tick the progressive pitch bend
 	}

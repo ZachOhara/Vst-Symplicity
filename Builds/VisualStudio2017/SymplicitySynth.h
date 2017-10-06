@@ -3,15 +3,13 @@
 #include <string>
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Constants.h"
 #include "DebugLogger.h"
 #include "TuningProcessor.h"
 #include "Oscilator.h"
+#include "OscMixer.h"
 #include "FilterProcessor.h"
 #include "SymplicityEditor.h"
-
-// Note that NUM_NOTES is also defined in TuningProcessor
-static const int NUM_NOTES = 128;
-static const int NUM_OSCILATORS = 3;
 
 enum PedalState {
 	INACTIVE,
@@ -74,6 +72,7 @@ private:
 
 	TuningProcessor tuningProcessor;
 	std::vector<Oscilator*> oscilators;
+	OscMixer oscMixer;
 	FilterProcessor filterProcessor;
 
 	std::vector<SynthModule*> modules;

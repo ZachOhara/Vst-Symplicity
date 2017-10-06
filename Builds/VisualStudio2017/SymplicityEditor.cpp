@@ -6,6 +6,10 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 {
 	setSize(1150, 475);
 
+	ControlGroup &mixer = *(new ControlGroup(*FindModule("Mix")));
+	mixer.setTopLeftPosition(500, 25);
+	mixer.setSize(200, 425);
+	addAndMakeVisible(mixer);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		String name = "Oscilator ";
@@ -14,11 +18,12 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 		ControlGroup &oscilator = *(new ControlGroup(*FindModule(name)));
 		oscilator.setTopLeftPosition(250, 25 + (i * 150));
 		oscilator.setSize(200, 125);
-
 		oscilator.AddParameterControl("Octave", 5, 0, 85, 125, false);
 		oscilator.AddParameterControl("Waveform", 90, 0, 110, 125, false);
-
 		addAndMakeVisible(oscilator);
+
+		String mixname = "Osc " + std::to_string(i + 1);
+		mixer.AddParameterControl(mixname, 10, 50 + (i * 150), 180, 40, true);
 	}
 
 	ControlGroup &tuning = *(new ControlGroup(*FindModule("Tuning")));
@@ -29,8 +34,8 @@ SymplicityEditor::SymplicityEditor(AudioProcessor &parent, std::vector<ModulePar
 	addAndMakeVisible(tuning);
 
 	ControlGroup &filter = *(new ControlGroup(*FindModule("Filter")));
-	filter.setTopLeftPosition(500, 25);
-	filter.setSize(200, 450);
+	filter.setTopLeftPosition(750, 25);
+	filter.setSize(200, 425);
 	filter.AddParameterControl("Cutoff", 10, 25, 180, 50, true);
 	filter.AddParameterControl("Resonance", 10, 75, 180, 50, true);
 	addAndMakeVisible(filter);
