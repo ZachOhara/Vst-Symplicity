@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include "SynthModule.h"
 
-static const double MASTER_LIMIT = 0.02;
+static const double MASTER_LIMIT = 0.2;
 
 class OscMixer :
 	public SynthModule
@@ -20,6 +20,6 @@ public:
 private:
 	std::vector<AudioParameterFloat*> oscLevels;
 
-	float GetAdjustedOscLevel(int);
+	double GetAdjustedOscLevel(int);
 };
 

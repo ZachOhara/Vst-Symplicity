@@ -36,7 +36,7 @@ double OscMixer::MixValues(double *oscValues)
 	return finalValue;
 }
 
-float OscMixer::GetAdjustedOscLevel(int index)
+double OscMixer::GetAdjustedOscLevel(int index)
 {
 	return std::pow((float)*oscLevels[index], EULER_NUM);
 }
