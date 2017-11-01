@@ -8,6 +8,7 @@
 #include "TuningProcessor.h"
 #include "Oscilator.h"
 #include "OscMixer.h"
+#include "EnvelopeProcessor.h"
 #include "FilterProcessor.h"
 #include "SymplicityEditor.h"
 
@@ -31,12 +32,12 @@ struct NoteStatus
 {
 	bool isPlaying = false;
 	PedalState pedalState = INACTIVE;
-	//EnvelopeState envelopeState;
+	EnvelopeNoteState envelopeState;
 	double phase[NUM_OSCILATORS];
 
-	void Begin(double eventTime)
+	void Begin(EnvelopeProcessor &envProc, double eventTime)
 	{
-		eventTime++; // TODO remove this
+		envProc.BeginNote(envelopeState, eventTime);
 		isPlaying = true;
 		for (int i = 0; i < NUM_OSCILATORS; i++)
 		{
@@ -44,9 +45,9 @@ struct NoteStatus
 		}
 	}
 
-	void Release(double eventTime)
+	void Release(EnvelopeProcessor &envProc, double eventTime)
 	{
-		isPlaying = false;
+		envProc.ReleaseNote(envelopeState, eventTime);
 	}
 };
 
@@ -73,6 +74,7 @@ private:
 	TuningProcessor tuningProcessor;
 	std::vector<Oscilator*> oscilators;
 	OscMixer oscMixer;
+	EnvelopeProcessor envProcessor;
 	FilterProcessor filterProcessor;
 
 	std::vector<SynthModule*> modules;

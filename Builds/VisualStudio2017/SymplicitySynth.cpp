@@ -3,13 +3,15 @@
 SymplicitySynth::SymplicitySynth(AudioProcessor &parent)
 {
 	modules.push_back(&tuningProcessor);
-	modules.push_back(&filterProcessor);
 	modules.push_back(&oscMixer);
+	modules.push_back(&envProcessor);
+	modules.push_back(&filterProcessor);
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		oscilators.push_back(new Oscilator(String(std::to_string(i + 1))));
 		modules.push_back(oscilators[i]);
 	}
+	
 	// Now that all modules have been created, register the parameters
 	for (int i = 0; i < modules.size(); i++)
 	{
@@ -88,12 +90,10 @@ void SymplicitySynth::ProcessMidiMessages(MidiBuffer &midiBuffer)
 		switch (GetMessageType(message)) {
 		case NOTE_ON:
 			// TODO if monophonic mode, release other notes
-			//debugLog.stream << "Note on: " << noteID << "\n";
-			keyboard[noteID].Begin(eventTime);
+			keyboard[noteID].Begin(envProcessor, eventTime);
 			break;
 		case NOTE_OFF:
-			//debugLog.stream << "Note off: " << noteID << "\n";
-			keyboard[noteID].Release(eventTime);
+			keyboard[noteID].Release(envProcessor, eventTime);
 			break;
 		case PEDAL_ON:
 			isPedalOn = true;
@@ -123,7 +123,11 @@ void SymplicitySynth::SynthesizeAudio()
 
 				double sample = oscMixer.MixValues(oscValues);
 
-				// TODO apply envelope
+				sample *= envProcessor.GetVolume(note.envelopeState);
+				if (envProcessor.IsFinishedReleasing(note.envelopeState))
+				{
+					note.isPlaying = false;
+				}
 
 				sampleBuffer[frame] += sample;
 			}
