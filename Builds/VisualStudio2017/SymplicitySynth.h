@@ -33,6 +33,7 @@ struct NoteStatus
 	bool isPlaying = false;
 	PedalState pedalState = INACTIVE;
 	EnvelopeNoteState envelopeState;
+	FilterNoteState filterState;
 	double phase[NUM_OSCILATORS];
 
 	void Begin(EnvelopeProcessor &envProc, double eventTime)

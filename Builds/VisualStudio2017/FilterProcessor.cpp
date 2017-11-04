@@ -3,7 +3,8 @@
 FilterProcessor::FilterProcessor() :
 	SynthModule("Filter", "Ftr"),
 	cutoffParam(ConstructParameterFloat("Cutoff", 0.0, MAX_FILTER_CUTOFF, MAX_FILTER_CUTOFF, 0.4)),
-	orderParam(ConstructParameterInt("Resonance", 1, MAX_FILTER_ORDER, 1))
+	orderParam(ConstructParameterInt("Resonance", 1, MAX_FILTER_ORDER, 1)),
+	contour(*(new EnvelopeProcessor("Contour", "Con")))
 {
 }
 
@@ -11,8 +12,9 @@ FilterProcessor::~FilterProcessor()
 {
 }
 
-double FilterProcessor::GetNextOutput(double currentInput)
+double FilterProcessor::GetNextOutput(FilterNoteState &state, double currentInput)
 {
+	RecalculateValues(state.setting);
 	double output = currentInput;
 	double deadOutput;
 	// the dead output is used to keep all the layers current
@@ -21,12 +23,12 @@ double FilterProcessor::GetNextOutput(double currentInput)
 	{
 		if (i < GetOrder())
 		{
-			output = GetOrderOutput(orderStates[i], output);
+			output = GetOrderOutput(state.setting, state.orderStates[i], output);
 			deadOutput = output;
 		}
 		else
 		{
-			deadOutput = GetOrderOutput(orderStates[i], deadOutput);
+			deadOutput = GetOrderOutput(state.setting, state.orderStates[i], deadOutput);
 		}
 	}
 	if (GetEnabled())
@@ -46,11 +48,12 @@ double FilterProcessor::GetNextOutput(double currentInput)
 	}
 }
 
-double FilterProcessor::GetOrderOutput(FilterState &state, double currentInput)
+double FilterProcessor::GetOrderOutput(FilterNoteSetting &setting, FilterLayerState &state, double currentInput)
 {
 	// first, calculate the output
 	state.x0 = currentInput;
-	double y0 = (b0 * state.x0) + (b1 * state.x1) + (b2 * state.x2) - (a1 * state.y1) - (a2 * state.y2);
+	double y0 = (setting.b0 * state.x0) + (setting.b1 * state.x1) + (setting.b2 * state.x2)
+		- (setting.a1 * state.y1) - (setting.a2 * state.y2);
 	// next, shift the samples
 	state.x2 = state.x1;
 	state.x1 = state.x0;
@@ -60,19 +63,7 @@ double FilterProcessor::GetOrderOutput(FilterState &state, double currentInput)
 	return y0;
 }
 
-void FilterProcessor::ClearSamples()
-{
-	for (int i = 0; i < MAX_FILTER_ORDER; i++)
-	{
-		orderStates[i].x0 = 0;
-		orderStates[i].x1 = 0;
-		orderStates[i].x2 = 0;
-		orderStates[i].y1 = 0;
-		orderStates[i].y2 = 0;
-	}
-}
-
-void FilterProcessor::RecalculateValues()
+void FilterProcessor::RecalculateValues(FilterNoteSetting &setting)
 {
 	double cutoff = GetCutoff();
 	double sampleRate = GetSampleRate();
@@ -86,11 +77,11 @@ void FilterProcessor::RecalculateValues()
 		}
 		double c_squared = c * c;
 		double d = c_squared + (c * std::pow(2, 0.5)) + 1;
-		b0 = 1 / d;
-		b1 = 2 / d;
-		b2 = 1 / d;
-		a1 = 2 * (1 - c_squared) / d;
-		a2 = (c_squared - (c * std::pow(2, 0.5)) + 1) / d;
+		setting.b0 = 1 / d;
+		setting.b1 = 2 / d;
+		setting.b2 = 1 / d;
+		setting.a1 = 2 * (1 - c_squared) / d;
+		setting.a2 = (c_squared - (c * std::pow(2, 0.5)) + 1) / d;
 	}
 }
 
@@ -98,7 +89,7 @@ void FilterProcessor::HandleParameterChange(AudioProcessorParameter *param)
 {
 	if (param == &cutoffParam)
 	{
-		RecalculateValues();
+		//RecalculateValues();
 	}
 }
 

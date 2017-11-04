@@ -1,13 +1,26 @@
 #pragma once
 
 #include "SynthModule.h"
+#include "EnvelopeProcessor.h"
 
 #define MAX_FILTER_CUTOFF 20000
 #define MAX_FILTER_ORDER 30
 
-struct FilterState
+struct FilterLayerState
 {
 	double x0, x1, x2, y1, y2;
+};
+
+struct FilterNoteSetting
+{
+	// calculated for the current settings
+	double b0, b1, b2, a1, a2;
+};
+
+struct FilterNoteState
+{
+	FilterLayerState orderStates[MAX_FILTER_ORDER];
+	FilterNoteSetting setting;
 };
 
 class FilterProcessor :
@@ -17,24 +30,20 @@ public:
 	FilterProcessor();
 	~FilterProcessor();
 
-	double GetNextOutput(double);
-	void ClearSamples();
+	double GetNextOutput(FilterNoteState &, double);
 
-	void RecalculateValues();
+	void RecalculateValues(FilterNoteSetting &);
 
 protected:
 	virtual void HandleParameterChange(AudioProcessorParameter *) override;
 
 private:
-	//AudioParameterBool &enabledParam;
+	EnvelopeProcessor &contour;
+
 	AudioParameterFloat &cutoffParam;
 	AudioParameterInt &orderParam;
-	FilterState orderStates[MAX_FILTER_ORDER];
 
-	// calculated for the current settings
-	double b0, b1, b2, a1, a2;
-
-	double GetOrderOutput(FilterState &, double);
+	double GetOrderOutput(FilterNoteSetting &, FilterLayerState &, double);
 	bool GetEnabled();
 	float GetCutoff();
 	int GetOrder();

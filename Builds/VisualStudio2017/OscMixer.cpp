@@ -16,7 +16,7 @@ OscMixer::~OscMixer()
 
 double OscMixer::MixValues(double *oscValues)
 {
-	float totalLevel = 0;
+	double totalLevel = 0;
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
 		totalLevel += GetAdjustedOscLevel(i);

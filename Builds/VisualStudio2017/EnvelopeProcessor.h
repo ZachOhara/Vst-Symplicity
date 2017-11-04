@@ -3,7 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SynthModule.h"
 
-static float ENV_MIN_TIME = 0.05f;
+static float ENV_MIN_TIME = 0.01f;
 static float ENV_MAX_TIME = 2.0f;
 static float ENV_TIME_SKEW = 0.5f;
 

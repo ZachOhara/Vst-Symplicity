@@ -40,7 +40,6 @@ void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 	{
 		modules[i]->SetSampleRate(newSampleRate);
 	}
-	filterProcessor.RecalculateValues();
 
 	debugLog.OpenDebugLogFile();
 	//debugLog.stream << "Starting debug log\n";
@@ -49,7 +48,6 @@ void SymplicitySynth::PrepareToPlay(double newSampleRate, int newBlockSize)
 void SymplicitySynth::ReleaseResources()
 {
 	free(sampleBuffer);
-	filterProcessor.ClearSamples();
 	debugLog.CloseDebugLogFile();
 }
 
@@ -114,6 +112,7 @@ void SymplicitySynth::SynthesizeAudio()
 			NoteStatus &note = keyboard[noteID];
 			if (note.isPlaying)
 			{
+				// Calculate frequency and simulate oscilators
 				double frequency = tuningProcessor.GetFrequency(noteID);
 
 				double oscValues[NUM_OSCILATORS];
@@ -121,20 +120,24 @@ void SymplicitySynth::SynthesizeAudio()
 					oscValues[i] = oscilators[i]->GetSample(note.phase[i], frequency);
 				}
 
+				// Mix the oscilators
 				double sample = oscMixer.MixValues(oscValues);
 
+				// Apply the envelope
 				sample *= envProcessor.GetVolume(note.envelopeState);
 				if (envProcessor.IsFinishedReleasing(note.envelopeState))
 				{
 					note.isPlaying = false;
 				}
 
+				// Apply the filter to the note
+				sample = filterProcessor.GetNextOutput(note.filterState, sample);
+
 				sampleBuffer[frame] += sample;
 			}
 		}
 		// TODO add noise
-		// Apply the filter
-		sampleBuffer[frame] = filterProcessor.GetNextOutput(sampleBuffer[frame]);
+		
 		// TODO apply master volume
 
 		// TODO tick the progressive pitch bend
