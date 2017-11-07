@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include "SynthModule.h"
 
-static const double MASTER_LIMIT = 0.2;
+static const double MASTER_LIMIT = 0.05;
 
 class OscMixer :
 	public SynthModule
