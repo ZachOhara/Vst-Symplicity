@@ -38,6 +38,7 @@ struct NoteStatus
 
 	void Begin(EnvelopeProcessor &envProc, double eventTime)
 	{
+		pedalState = KEY_PRESSED;
 		envProc.BeginNote(envelopeState, eventTime);
 		isPlaying = true;
 		for (int i = 0; i < NUM_OSCILATORS; i++)
@@ -48,6 +49,7 @@ struct NoteStatus
 
 	void Release(EnvelopeProcessor &envProc, double eventTime)
 	{
+		pedalState = INACTIVE;
 		envProc.ReleaseNote(envelopeState, eventTime);
 	}
 };
