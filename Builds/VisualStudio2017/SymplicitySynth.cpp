@@ -119,6 +119,10 @@ void SymplicitySynth::ProcessMidiMessages(MidiBuffer &midiBuffer)
 
 void SymplicitySynth::SynthesizeAudio()
 {
+	long totalOscDuration = 0;
+	long totalEnvDuration = 0;
+	long totalFilDuration = 0;
+
 	for (int frame = 0; frame < blockSize; frame++)
 	{
 		for (int noteID = 0; noteID < NUM_NOTES; noteID++)
@@ -126,6 +130,8 @@ void SymplicitySynth::SynthesizeAudio()
 			NoteStatus &note = keyboard[noteID];
 			if (note.isPlaying)
 			{
+				auto startTime = std::chrono::steady_clock::now();
+
 				// Calculate frequency and simulate oscilators
 				double frequency = tuningProcessor.GetFrequency(noteID);
 
@@ -137,6 +143,9 @@ void SymplicitySynth::SynthesizeAudio()
 				// Mix the oscilators
 				double sample = oscMixer.MixValues(oscValues);
 
+				auto oscTime = std::chrono::steady_clock::now();
+				std::chrono::nanoseconds oscDuration = oscTime - startTime;
+
 				// Apply the envelope
 				sample *= envProcessor.GetVolume(note.envelopeState);
 				if (envProcessor.IsFinishedReleasing(note.envelopeState))
@@ -144,10 +153,20 @@ void SymplicitySynth::SynthesizeAudio()
 					note.isPlaying = false;
 				}
 
+				auto envTime = std::chrono::steady_clock::now();
+				std::chrono::nanoseconds envDuration = envTime - oscTime;
+
 				// Apply the filter to the note
 				sample = filterProcessor.GetNextOutput(note.filterState, sample);
 
+				auto filTime = std::chrono::steady_clock::now();
+				std::chrono::nanoseconds filDuration = filTime - envTime;
+
 				sampleBuffer[frame] += sample;
+
+				totalOscDuration += oscDuration.count();
+				totalEnvDuration += envDuration.count();
+				totalFilDuration += filDuration.count();
 			}
 		}
 		// TODO add noise
@@ -156,6 +175,11 @@ void SymplicitySynth::SynthesizeAudio()
 
 		// TODO tick the progressive pitch bend
 	}
+
+	std::cout << (totalOscDuration / blockSize) << "  "
+		<< (totalEnvDuration / blockSize) << "  "
+		<< (totalFilDuration / blockSize) << "\n";
+	std::cout.flush();
 }
 
 static MidiMessageType GetMessageType(MidiMessage &message) {

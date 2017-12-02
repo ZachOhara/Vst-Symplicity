@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <chrono>
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Constants.h"
