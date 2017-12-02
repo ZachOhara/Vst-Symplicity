@@ -102,13 +102,9 @@ void SymplicitySynth::ProcessMidiMessages(MidiBuffer &midiBuffer)
 			break;
 		case PEDAL_ON:
 			isPedalOn = true;
-			std::cout << "Pedal On\n";
-			std::cout.flush();
 			break;
 		case PEDAL_OFF:
 			isPedalOn = false;
-			std::cout << "Pedal Off\n";
-			std::cout.flush();
 			for (int i = 0; i < NUM_NOTES; i++)
 			{
 				if (keyboard[i].pedalState == PEDALED_ONLY)

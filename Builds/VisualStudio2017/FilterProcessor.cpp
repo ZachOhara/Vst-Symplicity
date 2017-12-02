@@ -17,7 +17,7 @@ double FilterProcessor::GetNextOutput(FilterNoteState &state, double currentInpu
 	RecalculateValues(state.setting);
 	double output = currentInput;
 	double deadOutput;
-	// the dead output is used to keep all the layers current
+	// the dead output is used to keep all the layers updated
 	// thus removing the artifacts when changing resonance
 	for (int i = 0; i < GetOrder(); i++)
 	{
@@ -67,7 +67,7 @@ void FilterProcessor::RecalculateValues(FilterNoteSetting &setting)
 {
 	double cutoff = GetCutoff();
 	double sampleRate = GetSampleRate();
-	if (cutoff != 0)
+	if (setting.lastCutoff != cutoff && cutoff != 0)
 	{
 		double c = 1 / std::tan(double_Pi * (cutoff / sampleRate));
 		if (cutoff * 2 > sampleRate)

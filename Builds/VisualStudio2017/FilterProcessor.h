@@ -4,7 +4,7 @@
 #include "EnvelopeProcessor.h"
 
 #define MAX_FILTER_CUTOFF 20000
-#define MAX_FILTER_ORDER 30
+#define MAX_FILTER_ORDER 15
 
 struct FilterLayerState
 {
@@ -15,6 +15,8 @@ struct FilterNoteSetting
 {
 	// calculated for the current settings
 	double b0, b1, b2, a1, a2;
+
+	double lastCutoff = 0;
 };
 
 struct FilterNoteState
