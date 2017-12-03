@@ -42,6 +42,9 @@ public:
 	double GetSample(double &, double);
 	
 private:
+	int octave = 0;
+	double octaveFactor = 1;
+
 	AudioParameterChoice &octaveParam;
 	AudioParameterChoice &waveformParam;
 

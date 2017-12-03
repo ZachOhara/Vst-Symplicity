@@ -13,7 +13,12 @@ Oscilator::~Oscilator()
 
 double Oscilator::GetSample(double &phase, double frequency)
 {
-	frequency *= std::pow(2, GetOctave());
+	if (octave != GetOctave())
+	{
+		octave = GetOctave();
+		octaveFactor = std::pow(2, octave);
+	}
+	frequency *= octaveFactor;
 	phase += frequency * GetSecondsPerSample();
 	phase = phase - ((int)phase);
 	return GetUnalteredSample(phase);
