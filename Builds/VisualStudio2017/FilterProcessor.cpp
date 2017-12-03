@@ -73,15 +73,16 @@ void FilterProcessor::RecalculateValues(FilterNoteSetting &setting)
 		if (cutoff * 2 > sampleRate)
 		{
 			c = 1 / std::tan(double_Pi / 2);
-			// same formula, but cutoff = rate / 2;
+			// same formula, but cutoff is capped at the Nyquist frequency;
 		}
 		double c_squared = c * c;
-		double d = c_squared + (c * std::pow(2, 0.5)) + 1;
+		double d = c_squared + (c * ROOT_TWO) + 1;
 		setting.b0 = 1 / d;
 		setting.b1 = 2 / d;
 		setting.b2 = 1 / d;
 		setting.a1 = 2 * (1 - c_squared) / d;
-		setting.a2 = (c_squared - (c * std::pow(2, 0.5)) + 1) / d;
+		setting.a2 = (c_squared - (c * ROOT_TWO) + 1) / d;
+		setting.lastCutoff = cutoff;
 	}
 }
 

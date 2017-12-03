@@ -2,6 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SynthModule.h"
+#include "Constants.h"
 
 static float ENV_MIN_TIME = 0.01f;
 static float ENV_MAX_TIME = 2.0f;
@@ -20,6 +21,8 @@ enum EnvelopePhase {
 struct EnvelopeNoteState {
 	EnvelopePhase phase = SILENCE;
 	double currGain = 0;
+	double lastGain = 0;
+	double scaledGain = 0;
 	double gainDelta = 0; // per sample
 	double noteTime = 0;
 };

@@ -2,6 +2,7 @@
 
 #include "SynthModule.h"
 #include "EnvelopeProcessor.h"
+#include "Constants.h"
 
 #define MAX_FILTER_CUTOFF 20000
 #define MAX_FILTER_ORDER 15

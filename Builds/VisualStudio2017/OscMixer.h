@@ -20,6 +20,14 @@ public:
 private:
 	std::vector<AudioParameterFloat*> oscLevels;
 
+	double totalLevel;
+	float lastOscLevels[NUM_OSCILATORS];
+	double adjustedOscLevels[NUM_OSCILATORS];
+
+	bool IsUpdateNecessary();
+	void DoUpdate();
+
 	double GetAdjustedOscLevel(int);
+	float GetOscLevel(int);
 };
 

@@ -16,15 +16,15 @@ OscMixer::~OscMixer()
 
 double OscMixer::MixValues(double *oscValues)
 {
-	double totalLevel = 0;
-	for (int i = 0; i < NUM_OSCILATORS; i++)
+	if (IsUpdateNecessary())
 	{
-		totalLevel += GetAdjustedOscLevel(i);
+		DoUpdate();
 	}
+
 	double finalValue = 0;
 	for (int i = 0; i < NUM_OSCILATORS; i++)
 	{
-		double ratio = GetAdjustedOscLevel(i) / totalLevel;
+		double ratio = adjustedOscLevels[i] / totalLevel;
 		finalValue += ratio * oscValues[i];
 	}
 	finalValue *= MASTER_LIMIT;
@@ -36,7 +36,38 @@ double OscMixer::MixValues(double *oscValues)
 	return finalValue;
 }
 
+bool OscMixer::IsUpdateNecessary()
+{
+	for (int i = 0; i < NUM_OSCILATORS; i++)
+	{
+		if (lastOscLevels[i] != (float)*oscLevels[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void OscMixer::DoUpdate()
+{
+	totalLevel = 0;
+	for (int i = 0; i < NUM_OSCILATORS; i++)
+	{
+		if (lastOscLevels[i] != GetOscLevel(i))
+		{
+			lastOscLevels[i] = GetOscLevel(i);
+			adjustedOscLevels[i] = GetAdjustedOscLevel(i);
+		}
+		totalLevel += adjustedOscLevels[i];
+	}
+}
+
 double OscMixer::GetAdjustedOscLevel(int index)
 {
-	return std::pow((float)*oscLevels[index], EULER_NUM);
+	return std::pow(GetOscLevel(index), EULER_NUM);
+}
+
+float OscMixer::GetOscLevel(int index)
+{
+	return (float)*oscLevels[index];
 }

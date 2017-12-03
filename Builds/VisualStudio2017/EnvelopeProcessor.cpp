@@ -65,12 +65,20 @@ double EnvelopeProcessor::GetVolume(EnvelopeNoteState &state)
 		state.currGain = 0;
 	}
 
-	return GetScaledLevel(state.currGain);
+	// if the gain hasn't changed this sample, don't rescale it (scaling is expensive)
+
+	if (state.currGain != state.lastGain)
+	{
+		state.lastGain = state.currGain;
+		state.scaledGain = GetScaledLevel(state.currGain);
+	}
+
+	return state.scaledGain;
 }
 
 double EnvelopeProcessor::GetScaledLevel(double level)
 {
-	return std::pow(level, 2.7182818); // Euler's number (e)
+	return std::pow(level, EULER_NUM);
 }
 
 void EnvelopeProcessor::ProgressIfReady(EnvelopeNoteState &state)
