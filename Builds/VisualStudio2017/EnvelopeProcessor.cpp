@@ -26,20 +26,19 @@ void EnvelopeProcessor::BeginNote(EnvelopeNoteState &state, double eventTime)
 
 void EnvelopeProcessor::ReleaseNote(EnvelopeNoteState &state, double eventTime)
 {
+	if (state.phase == ATTACK)
+	{
+		ProgressToDecay(state);
+		// if the attack is still happening, ditch it and start decaying
+		// this also sets up the pre-release phase, which skips from decay into release
+	}
 	state.phase = PRE_RELEASE;
-	// If the note is released before the decay phase has finished, then the
-	// release must be put off until the decay is done. The following code
-	// accounts for this.
-	if (state.noteTime + eventTime < GetAttackTime() + GetDecayTime())
-	{
-		state.noteTime -= GetAttackTime() + GetDecayTime();
-		// this resets the timer to a negative value that will hit
-		// zero as soon as the decay completes
-	}
-	else
-	{
-		state.noteTime = -eventTime;
-	}
+	state.noteTime = -eventTime;
+	// One issue with this system is the potential to jump to the release if the
+	// key is released before the note finishes the decay phase. An old solution
+	// to this problem involved complicated code to modify the timer, but this
+	// didn't work very well. Now, the sustain phase is just blocked until the gain
+	// gets down to sustain-level
 }
 
 bool EnvelopeProcessor::IsFinishedReleasing(EnvelopeNoteState &state)
@@ -101,11 +100,11 @@ void EnvelopeProcessor::ProgressIfReady(EnvelopeNoteState &state)
 	case SUSTAIN:
 		break; // progression is triggered by a call to releaseNote(), not here
 	case PRE_RELEASE:
-		if (state.noteTime > 0)
+		if (state.noteTime > 0 && state.currGain <= GetSustainLevel())
 			ProgressToRelease(state);
 		break;
 	case RELEASE:
-		if (state.noteTime > GetReleaseTime())
+		if (state.noteTime > GetReleaseTime() && state.currGain <= 0)
 			ProgressToSilence(state);
 		break;
 	}
@@ -119,9 +118,21 @@ void EnvelopeProcessor::ProgressToAttack(EnvelopeNoteState &state)
 	{
 		state.phase = ATTACK;
 		state.gainDelta = (1 - state.currGain) / (GetAttackTime() / GetSecondsPerSample());
+
+		if (VERBOSE_PHASE_TRANSITIONS)
+		{
+			std::cout << "Attack, " << state.currGain << "+" << state.gainDelta
+				<< "  t:" << state.noteTime << "/" << GetAttackTime() << "\n";
+			std::cout.flush();
+		}
 	}
 	else
 	{
+		if (VERBOSE_PHASE_TRANSITIONS)
+		{
+			std::cout << "Attack skipped\n";
+			std::cout.flush();
+		}
 		state.currGain = 1;
 		ProgressToDecay(state);
 	}
@@ -134,11 +145,22 @@ void EnvelopeProcessor::ProgressToDecay(EnvelopeNoteState &state)
 	if (state.noteTime <= GetAttackTime() + GetDecayTime())
 	{
 		state.phase = DECAY;
-		state.currGain = 1;
 		state.gainDelta = (GetSustainLevel() - state.currGain) / (GetDecayTime() / GetSecondsPerSample());
+		
+		if (VERBOSE_PHASE_TRANSITIONS)
+		{
+			std::cout << "Decay, " << state.currGain << "+" << state.gainDelta
+				<< "  t:" << state.noteTime << "/" << GetAttackTime() + GetDecayTime() << "\n";
+			std::cout.flush();
+		}
 	}
 	else
 	{
+		if (VERBOSE_PHASE_TRANSITIONS)
+		{
+			std::cout << "Decay skipped\n";
+			std::cout.flush();
+		}
 		ProgressToSustain(state);
 	}
 }
@@ -148,20 +170,31 @@ void EnvelopeProcessor::ProgressToSustain(EnvelopeNoteState &state)
 	state.phase = SUSTAIN;
 	state.currGain = GetSustainLevel();
 	state.gainDelta = 0;
+
+	if (VERBOSE_PHASE_TRANSITIONS)
+	{
+		std::cout << "Sustain, " << state.currGain << "+" << state.gainDelta
+			<< "  t:" << state.noteTime << "\n";
+		std::cout.flush();
+	}
 }
 
 void EnvelopeProcessor::ProgressToRelease(EnvelopeNoteState &state)
 {
-	// Check if the release time is negligible (less than one frame)
-	// If it is, skip to silence
-	if (state.noteTime <= GetReleaseTime())
+	// Unlike the other timed phase, the release should never be skipped because
+	// the timer at this point is unreliable. If the key is released before the note
+	// finishes the decay phase, the end of the decay phase will be added to the timer
+	// and any skipping mechanism has the ability to mis-fire and clip the end of the
+	// note.
+
+	state.phase = RELEASE;
+	state.gainDelta = (0 - state.currGain) / (GetReleaseTime() / GetSecondsPerSample());
+
+	if (VERBOSE_PHASE_TRANSITIONS)
 	{
-		state.phase = RELEASE;
-		state.gainDelta = (0 - state.currGain) / (GetReleaseTime() / GetSecondsPerSample());
-	}
-	else
-	{
-		ProgressToSilence(state);
+		std::cout << "Release, " << state.currGain << "+" << state.gainDelta
+			<< "  t:" << state.noteTime << "/" << GetReleaseTime() << "\n";
+		std::cout.flush();
 	}
 }
 
@@ -170,6 +203,13 @@ void EnvelopeProcessor::ProgressToSilence(EnvelopeNoteState &state)
 	state.phase = SILENCE;
 	state.currGain = 0;
 	state.gainDelta = 0;
+
+	if (VERBOSE_PHASE_TRANSITIONS)
+	{
+		std::cout << "Silence, " << state.currGain << "+" << state.gainDelta
+			<< "  t:" << state.noteTime << "\n";
+		std::cout.flush();
+	}
 }
 
 float EnvelopeProcessor::GetAttackTime()
