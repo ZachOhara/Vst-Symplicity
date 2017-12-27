@@ -176,10 +176,14 @@ void SymplicitySynth::SynthesizeAudio()
 		// TODO tick the progressive pitch bend
 	}
 
+	// Processing time information. Uncomment this code to see how much cpu
+	// time the diffeent components of the synth are taking.
+	/*
 	std::cout << (totalOscDuration / blockSize) << "  "
 		<< (totalEnvDuration / blockSize) << "  "
 		<< (totalFilDuration / blockSize) << "\n";
 	std::cout.flush();
+	*/
 }
 
 static MidiMessageType GetMessageType(MidiMessage &message) {
