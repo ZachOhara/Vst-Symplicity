@@ -41,11 +41,17 @@ struct NoteStatus
 	{
 		pedalState = KEY_PRESSED;
 		envProc.BeginNote(envelopeState, eventTime);
-		isPlaying = true;
-		for (int i = 0; i < NUM_OSCILATORS; i++)
+		// TODO: come up with a better method for resetting phase
+		// the ideal system would ensure everything is always in phase
+		// with everything else
+		if (!isPlaying)
 		{
-			phase[i] = 0;
+			for (int i = 0; i < NUM_OSCILATORS; i++)
+			{
+				phase[i] = 0;
+			}
 		}
+		isPlaying = true;
 	}
 
 	void Release(EnvelopeProcessor &envProc, double eventTime)
