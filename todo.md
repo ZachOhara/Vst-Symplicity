@@ -2,7 +2,6 @@
 
 Features:
 * Filter contour
-* Sustain pedal support
 * Pitch wheel support
 * Mod wheel support (vibrato and/or filter)
 * Full support for parameters (saving and loading)
@@ -12,5 +11,5 @@ Rewrites:
 
 Fixes / changes:
 * Add an indicator of the current key
-* Fix the envelope sometimes not decaying for short notes (jumping straight to release)
-*** Idea: maybe it has something to do with if the release is triggered before the attack finishes, and the progression to decay never happens because time is negative at that point...
+* Fix the filter clicking when resonance increases / decreases
+* Fix the filter clicking when a note is first pressed
