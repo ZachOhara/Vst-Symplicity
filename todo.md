@@ -11,5 +11,3 @@ Rewrites:
 
 Fixes / changes:
 * Add an indicator of the current key
-* Fix the filter clicking when resonance increases / decreases
-* Fix the filter clicking when a note is first pressed
