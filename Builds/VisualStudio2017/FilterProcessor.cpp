@@ -16,20 +16,9 @@ double FilterProcessor::GetNextOutput(FilterNoteState &state, double currentInpu
 {
 	RecalculateValues(state.setting);
 	double output = currentInput;
-	double deadOutput;
-	// the dead output is used to keep all the layers updated
-	// thus removing the artifacts when changing resonance
 	for (int i = 0; i < GetOrder(); i++)
 	{
-		if (i < GetOrder())
-		{
-			output = GetOrderOutput(state.setting, state.orderStates[i], output);
-			deadOutput = output;
-		}
-		else
-		{
-			deadOutput = GetOrderOutput(state.setting, state.orderStates[i], deadOutput);
-		}
+		output = GetOrderOutput(state.setting, state.orderStates[i], output);
 	}
 	if (GetEnabled())
 	{
@@ -83,6 +72,13 @@ void FilterProcessor::RecalculateValues(FilterNoteSetting &setting)
 		setting.a1 = 2 * (1 - c_squared) / d;
 		setting.a2 = (c_squared - (c * ROOT_TWO) + 1) / d;
 		setting.lastCutoff = cutoff;
+
+		/*
+		std::cout << "Values recalculated: {" <<
+			setting.b0 << ", " << setting.b1 << ", " << setting.b2
+			<< ", " << setting.a1 << ", " << setting.a2 << "}\n";
+		std::cout.flush();
+		*/
 	}
 }
 

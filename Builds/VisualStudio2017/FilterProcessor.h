@@ -9,7 +9,11 @@
 
 struct FilterLayerState
 {
-	double x0, x1, x2, y1, y2;
+	double x0 = 0;
+	double x1 = 0;
+	double x2 = 0;
+	double y1 = 0;
+	double y2 = 0;
 };
 
 struct FilterNoteSetting
